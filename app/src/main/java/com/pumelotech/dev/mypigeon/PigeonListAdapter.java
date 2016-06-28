@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -63,7 +64,8 @@ public class PigeonListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_id);
             viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_name);
-            viewHolder.State = (ImageButton) view.findViewById(R.id.imageButton);
+            viewHolder.Icon = (ImageButton) view.findViewById(R.id.imageButton);
+            viewHolder.Check = (CheckBox) view.findViewById(R.id.checkBox);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -77,17 +79,21 @@ public class PigeonListAdapter extends BaseAdapter {
             viewHolder.PigeonName.setText(R.string.no_name);
         viewHolder.PigeonID.setText(pigeon.getID());
         final String pigeonStatus = pigeon.getStatus();
-        if (pigeonStatus != null && pigeonStatus.equals("FLY"))
-            viewHolder.State.setEnabled(true);
-        else
-        viewHolder.State.setEnabled(false);
+        if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
+            viewHolder.Icon.setEnabled(true);
+            viewHolder.Check.setVisibility(View.INVISIBLE);
+        } else {
+            viewHolder.Icon.setEnabled(false);
+            viewHolder.Check.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
     static class ViewHolder {
         TextView PigeonName;
         TextView PigeonID;
-        ImageButton State;
+        ImageButton Icon;
+        CheckBox Check;
     }
 }
 

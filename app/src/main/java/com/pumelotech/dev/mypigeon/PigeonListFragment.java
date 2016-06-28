@@ -3,6 +3,7 @@ package com.pumelotech.dev.mypigeon;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -70,7 +71,7 @@ public class PigeonListFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.fly, menu);
-        super.onCreateOptionsMenu(menu,inflater);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -78,35 +79,41 @@ public class PigeonListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pigeon_list, container, false);
         ListView listView = (ListView) view.findViewById(R.id.listView_pigeon);
-        final PigeonListAdapter mPigeonListAdapter= new PigeonListAdapter(getActivity());
+        final PigeonListAdapter mPigeonListAdapter = new PigeonListAdapter(getActivity());
         listView.setAdapter(mPigeonListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final PigeonInfo pigeon = mPigeonListAdapter.getPigeon(position);
                 if (pigeon == null) return;
-                Intent intent = new Intent(getActivity(),RecordActivity.class);
-                intent.putExtra("name",pigeon.getName());
+                Intent intent = new Intent(getActivity(), RecordActivity.class);
+                intent.putExtra("name", pigeon.getName());
                 startActivity(intent);
             }
         });
-        for(int i=0;i<10;i++) {
+        String dbName = "MyPigeonDB.db";
+        PigeonDB pigeonDB = new PigeonDB(getActivity(),dbName,null,1);
+        SQLiteDatabase db = pigeonDB.getWritableDatabase();
+        db.beginTransaction();
+        for (int i = 0; i < 1; i++) {
+            String name = "信使" + i;
+
+            db.execSQL("Insert into PigeonTable (name,shed_id,owner_id,) values('信使',1,5)");
+        }
+        db.setTransactionSuccessful();
+        db.close();
+        for (int i = 0; i < 10; i++) {
             PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("信使"+(i+1)+"号");
-            pigeon.setID("12121"+i);
+            pigeon.setName("依人" + (i + 1) + "号");
+            pigeon.setID("10121" + i);
+            if (i > 6)
+                pigeon.setStatus("FLY");
             mPigeonListAdapter.addPigeon(pigeon);
         }
-        for(int i=0;i<10;i++) {
+        for (int i = 0; i < 10; i++) {
             PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("依人"+(i+1)+"号");
-            pigeon.setID("10121"+i);
-            pigeon.setStatus("FLY");
-            mPigeonListAdapter.addPigeon(pigeon);
-        }
-        for(int i=0;i<10;i++) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("高飞"+(i+1)+"号");
-            pigeon.setID("13121"+i);
+            pigeon.setName("高飞" + (i + 1) + "号");
+            pigeon.setID("13121" + i);
             mPigeonListAdapter.addPigeon(pigeon);
         }
         mPigeonListAdapter.notifyDataSetChanged();
