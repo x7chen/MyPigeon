@@ -3,16 +3,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nev_fly"
+            android:id="@+id/nav_pigeon"
             android:icon="@drawable/ic_menu_send"
             android:title="我的鸽子" />
         <item
-            android:id="@+id/nav_log"
+            android:id="@+id/nav_fly"
             android:icon="@drawable/ic_menu_share"
             android:title="开始放飞" />
 
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_record"
             android:icon="@drawable/ic_menu_manage"
             android:title="放飞记录" />
     </group>
@@ -20,11 +20,11 @@
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_input"
                 android:icon="@drawable/ic_menu_share"
                 android:title="录入信息" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_help"
                 android:icon="@drawable/ic_menu_send"
                 android:title="帮助" />
         </menu>

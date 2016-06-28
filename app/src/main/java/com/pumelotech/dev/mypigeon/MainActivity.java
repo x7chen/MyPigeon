@@ -14,10 +14,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,PigeonListFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, PigeonListFragment.OnFragmentInteractionListener {
 
-    private MainPageFragment mainPage;
-    private PigeonListFragment pigeonList;
+    private MainPageFragment mainPageFragment;
+    private PigeonListFragment pigeonListFragment;
+    private RecordFragment recordFragment;
+    private ManageFragment manageFragment;
+    private HelpFragment helpFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,14 +41,48 @@ public class MainActivity extends AppCompatActivity
         setDefaultFragment();
     }
 
-    private void setDefaultFragment()
-    {
+    private void setDefaultFragment() {
+        setMainPageFragment();
+    }
+
+    private void setMainPageFragment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        pigeonList = new PigeonListFragment();
-        transaction.add(R.id.main_fragment_container, pigeonList);
+        mainPageFragment = new MainPageFragment();
+        transaction.replace(R.id.main_fragment_container, mainPageFragment);
         transaction.commit();
     }
+
+    private void setPigeonListFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        pigeonListFragment = new PigeonListFragment();
+        transaction.replace(R.id.main_fragment_container, pigeonListFragment);
+        transaction.commit();
+    }
+    private void setRecordFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        recordFragment = new RecordFragment();
+        transaction.replace(R.id.main_fragment_container, recordFragment);
+        transaction.commit();
+    }
+    private void setInputFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        manageFragment = new ManageFragment();
+        transaction.replace(R.id.main_fragment_container, manageFragment);
+        transaction.commit();
+    }
+
+    private void setHelpFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        helpFragment = new HelpFragment();
+        transaction.replace(R.id.main_fragment_container, helpFragment);
+        transaction.commit();
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -83,14 +121,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nev_fly) {
-            // Handle the camera action
-        }  else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_pigeon) {
+            setMainPageFragment();
+        } else if (id == R.id.nav_fly) {
+            setPigeonListFragment();
+        } else if (id == R.id.nav_record) {
+            setRecordFragment();
+        } else if (id == R.id.nav_input) {
+            setInputFragment();
+        } else if (id == R.id.nav_help) {
+            setHelpFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

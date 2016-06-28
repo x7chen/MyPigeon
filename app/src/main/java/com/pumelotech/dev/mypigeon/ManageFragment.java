@@ -2,27 +2,22 @@ package com.pumelotech.dev.mypigeon;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PigeonListFragment.OnFragmentInteractionListener} interface
+ * {@link ManageFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link PigeonListFragment#newInstance} factory method to
+ * Use the {@link ManageFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PigeonListFragment extends Fragment {
+public class ManageFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,7 +29,7 @@ public class PigeonListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public PigeonListFragment() {
+    public ManageFragment() {
         // Required empty public constructor
     }
 
@@ -44,11 +39,11 @@ public class PigeonListFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PigeonListFragment.
+     * @return A new instance of fragment ManageFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PigeonListFragment newInstance(String param1, String param2) {
-        PigeonListFragment fragment = new PigeonListFragment();
+    public static ManageFragment newInstance(String param1, String param2) {
+        ManageFragment fragment = new ManageFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -63,54 +58,13 @@ public class PigeonListFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        setHasOptionsMenu(true);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.fly, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-
-    @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pigeon_list, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.listView_pigeon);
-        final PigeonListAdapter mPigeonListAdapter= new PigeonListAdapter(getActivity());
-        listView.setAdapter(mPigeonListAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final PigeonInfo pigeon = mPigeonListAdapter.getPigeon(position);
-                if (pigeon == null) return;
-                Intent intent = new Intent(getActivity(),RecordActivity.class);
-                intent.putExtra("name",pigeon.getName());
-                startActivity(intent);
-            }
-        });
-        for(int i=0;i<10;i++) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("信使"+(i+1)+"号");
-            pigeon.setID("12121"+i);
-            mPigeonListAdapter.addPigeon(pigeon);
-        }
-        for(int i=0;i<10;i++) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("依人"+(i+1)+"号");
-            pigeon.setID("10121"+i);
-            mPigeonListAdapter.addPigeon(pigeon);
-        }
-        for(int i=0;i<10;i++) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("高飞"+(i+1)+"号");
-            pigeon.setID("13121"+i);
-            mPigeonListAdapter.addPigeon(pigeon);
-        }
-        mPigeonListAdapter.notifyDataSetChanged();
         // Inflate the layout for this fragment
-        return view;
+        return inflater.inflate(R.layout.fragment_input, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
