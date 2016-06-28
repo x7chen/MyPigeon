@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,11 +22,11 @@ public class PigeonListAdapter extends BaseAdapter {
         super();
         mPigeon = new ArrayList<PigeonInfo>();
 //        mInflator = fragment.getLayoutInflater();
-        mInflator = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void addPigeon(PigeonInfo pigeon) {
-        if(!mPigeon.contains(pigeon)) {
+        if (!mPigeon.contains(pigeon)) {
             mPigeon.add(pigeon);
         }
     }
@@ -62,24 +63,31 @@ public class PigeonListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_id);
             viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_name);
+            viewHolder.State = (ImageButton) view.findViewById(R.id.imageButton);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
         PigeonInfo pigeon = mPigeon.get(i);
-        final String deviceName = pigeon.getName();
-        if (deviceName != null && deviceName.length() > 0)
-            viewHolder.PigeonName.setText(deviceName);
+        final String pigeonName = pigeon.getName();
+        if (pigeonName != null && pigeonName.length() > 0)
+            viewHolder.PigeonName.setText(pigeonName);
         else
             viewHolder.PigeonName.setText(R.string.no_name);
         viewHolder.PigeonID.setText(pigeon.getID());
-
+        final String pigeonStatus = pigeon.getStatus();
+        if (pigeonStatus != null && pigeonStatus.equals("FLY"))
+            viewHolder.State.setEnabled(true);
+        else
+        viewHolder.State.setEnabled(false);
         return view;
     }
+
     static class ViewHolder {
         TextView PigeonName;
         TextView PigeonID;
+        ImageButton State;
     }
 }
 

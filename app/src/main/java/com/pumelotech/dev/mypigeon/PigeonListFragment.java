@@ -100,6 +100,7 @@ public class PigeonListFragment extends Fragment {
             PigeonInfo pigeon = new PigeonInfo();
             pigeon.setName("依人"+(i+1)+"号");
             pigeon.setID("10121"+i);
+            pigeon.setStatus("FLY");
             mPigeonListAdapter.addPigeon(pigeon);
         }
         for(int i=0;i<10;i++) {
