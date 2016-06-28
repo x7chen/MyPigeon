@@ -3,6 +3,7 @@ package com.pumelotech.dev.mypigeon;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -92,30 +93,24 @@ public class PigeonListFragment extends Fragment {
             }
         });
         String dbName = "MyPigeonDB.db";
-        PigeonDB pigeonDB = new PigeonDB(getActivity(),dbName,null,1);
-        SQLiteDatabase db = pigeonDB.getWritableDatabase();
+        PigeonDBHelper pigeonDBHelper = new PigeonDBHelper(getActivity(), dbName, null, 1);
+        SQLiteDatabase db = pigeonDBHelper.getWritableDatabase();
         db.beginTransaction();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             String name = "信使" + i;
 
-            db.execSQL("Insert into PigeonTable (name,shed_id,owner_id,) values('信使',1,5)");
+            db.execSQL("Insert into PigeonTable (name,shed_id,owner_id) values('" + name + "',1,5)");
+        }
+        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable", new String[]{});
+        while (cs.moveToNext()) {
+            PigeonInfo pigeon = new PigeonInfo();
+            pigeon.setName(cs.getString(cs.getColumnIndex("name")));
+            pigeon.setID(cs.getString(cs.getColumnIndex("id")));
+            mPigeonListAdapter.addPigeon(pigeon);
         }
         db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
-        for (int i = 0; i < 10; i++) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("依人" + (i + 1) + "号");
-            pigeon.setID("10121" + i);
-            if (i > 6)
-                pigeon.setStatus("FLY");
-            mPigeonListAdapter.addPigeon(pigeon);
-        }
-        for (int i = 0; i < 10; i++) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName("高飞" + (i + 1) + "号");
-            pigeon.setID("13121" + i);
-            mPigeonListAdapter.addPigeon(pigeon);
-        }
         mPigeonListAdapter.notifyDataSetChanged();
         // Inflate the layout for this fragment
         return view;
@@ -150,7 +145,7 @@ public class PigeonListFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
