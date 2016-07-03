@@ -2,6 +2,12 @@ package com.pumelotech.dev.mypigeon;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,18 +17,24 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PigeonListFragment.OnFragmentInteractionListener {
 
+    static final String DebugTag = "MyPigeon";
     private MainPageFragment mainPageFragment;
     private PigeonListFragment pigeonListFragment;
     private RecordFragment recordFragment;
     private ManageFragment manageFragment;
     private HelpFragment helpFragment;
-
+    private LeConnecter leConnecter;
+    private BluetoothAdapter mBluetoothAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +52,77 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         // 设置默认的Fragment
         setDefaultFragment();
+
+
+        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
+        // BluetoothAdapter through BluetoothManager.
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
+        // Checks if Bluetooth is supported on the device.
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        leConnecter = new LeConnecter();
+        leConnecter.registerCallbacks(new LeConnecter.LeManagerCallBacks() {
+            @Override
+            public void onDeviceConnected() {
+                Log.d(DebugTag,"connect Success");
+            }
+
+            @Override
+            public void onDeviceDisconnected() {
+
+            }
+
+            @Override
+            public void onServiceFound() {
+
+            }
+
+            @Override
+            public void onReceived(byte[] data) {
+
+            }
+
+            @Override
+            public void onInitialized() {
+
+            }
+
+            @Override
+            public void onSending() {
+
+            }
+
+            @Override
+            public void onError(String message, int errorCode) {
+
+            }
+
+            @Override
+            public void onDeviceNotSupported() {
+
+            }
+        });
+        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                String deviceName = device.getName();
+                if(device.getName()!=null) {
+                    if (device.getName().equals("BT05")) {
+                        leConnecter.connect(MainActivity.this, device);
+
+                    }
+                }
+                leConnecter.connect(MainActivity.this, device);
+                Log.d(DebugTag,"NAME:"+deviceName+"RSSI:"+rssi);
+            }
+        });
+        Log.d(DebugTag,"Start Scan");
     }
 
     private void setDefaultFragment() {
