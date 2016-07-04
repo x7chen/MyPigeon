@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.List;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,25 +94,16 @@ public class PigeonListFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        String dbName = "MyPigeonDB.db";
-        PigeonDBHelper pigeonDBHelper = new PigeonDBHelper(getActivity(), dbName, null, 1);
-        SQLiteDatabase db = pigeonDBHelper.getWritableDatabase();
-        db.beginTransaction();
-        for (int i = 0; i < 10; i++) {
-            String name = "信使" + i;
-
-            db.execSQL("Insert into PigeonTable (name,shed_id,owner_id) values('" + name + "',1,5)");
+        MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
+        List<PigeonInfo> allPigeon = null;
+        if (myPigeonDAO != null) {
+            allPigeon = myPigeonDAO.getAllPigeon();
         }
-        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable", new String[]{});
-        while (cs.moveToNext()) {
-            PigeonInfo pigeon = new PigeonInfo();
-            pigeon.setName(cs.getString(cs.getColumnIndex("name")));
-            pigeon.setID(cs.getString(cs.getColumnIndex("id")));
-            mPigeonListAdapter.addPigeon(pigeon);
+        if (allPigeon != null) {
+            for (PigeonInfo pigeon : allPigeon) {
+                mPigeonListAdapter.addPigeon(pigeon);
+            }
         }
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
         mPigeonListAdapter.notifyDataSetChanged();
         // Inflate the layout for this fragment
         return view;

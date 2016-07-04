@@ -7,7 +7,7 @@ public class PigeonInfo {
     public String Name;
     public String ID;
     public String OwnerID;
-    public String Shed;
+    public String ShedID;
     public String Status;
 
     public String getName() {
@@ -34,12 +34,12 @@ public class PigeonInfo {
         OwnerID = ownerID;
     }
 
-    public String getShed() {
-        return Shed;
+    public String getShedID() {
+        return ShedID;
     }
 
-    public void setShed(String shed) {
-        Shed = shed;
+    public void setShedID(String shedID) {
+        ShedID = shedID;
     }
 
     public String getStatus() {

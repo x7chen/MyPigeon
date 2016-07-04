@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity
     private RecordFragment recordFragment;
     private ManageFragment manageFragment;
     private HelpFragment helpFragment;
-    private LeConnecter leConnecter;
-    private BluetoothAdapter mBluetoothAdapter;
+    private PacketParser mPacketParser;
+    ApplicationContextHelper applicationContextHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,78 +53,9 @@ public class MainActivity extends AppCompatActivity
         // 设置默认的Fragment
         setDefaultFragment();
 
-
-        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
-        // BluetoothAdapter through BluetoothManager.
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-
-        // Checks if Bluetooth is supported on the device.
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        leConnecter = new LeConnecter();
-        leConnecter.registerCallbacks(new LeConnecter.LeManagerCallBacks() {
-            @Override
-            public void onDeviceConnected() {
-                Log.d(DebugTag,"connect Success");
-            }
-
-            @Override
-            public void onDeviceDisconnected() {
-
-            }
-
-            @Override
-            public void onServiceFound() {
-
-            }
-
-            @Override
-            public void onReceived(byte[] data) {
-
-            }
-
-            @Override
-            public void onInitialized() {
-
-            }
-
-            @Override
-            public void onSending() {
-
-            }
-
-            @Override
-            public void onError(String message, int errorCode) {
-
-            }
-
-            @Override
-            public void onDeviceNotSupported() {
-
-            }
-        });
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                String deviceName = device.getName();
-                if(device.getName()!=null) {
-                    if (device.getName().equals("BT05")) {
-                        leConnecter.connect(MainActivity.this, device);
-
-                    }
-                }
-                leConnecter.connect(MainActivity.this, device);
-                Log.d(DebugTag,"NAME:"+deviceName+"RSSI:"+rssi);
-            }
-        });
-        Log.d(DebugTag,"Start Scan");
+        mPacketParser = PacketParser.getInstance(this);
+        MyPigeonDAO.getInstance(this);
     }
-
     private void setDefaultFragment() {
         setMainPageFragment();
     }

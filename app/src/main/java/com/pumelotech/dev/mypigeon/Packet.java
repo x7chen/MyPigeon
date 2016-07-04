@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Packet {
 
-    static String TAG = "com.momo.dev.l58tool.packet";
+    static String TAG = MainActivity.DebugTag;
     List<Byte> mPacket = new ArrayList<Byte>();
     static short mSequenceId = 0;
     CRC16 crc16 = new CRC16();
@@ -170,7 +170,7 @@ public class Packet {
             strBuilder.append(String.format("%02X ", bb));
         }
         strBuilder.append("\n");
-        Log.i(NusManager.TAG, strBuilder.toString());
+        Log.i(TAG, strBuilder.toString());
     }
 
     @Override
@@ -189,7 +189,7 @@ public class Packet {
             strBuilder.append(String.format("%02X ", bb));
         }
         strBuilder.append("\n");
-        Log.i(NusManager.TAG, "Print:" + strBuilder.toString());
+        Log.i(TAG, "Print:" + strBuilder.toString());
     }
 
 

@@ -60,6 +60,7 @@ public class PigeonListAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         // General ListView optimization code.
         if (view == null) {
+            //此处的绘制（inflate）最耗时，这也是viewholder存在的必要
             view = mInflator.inflate(R.layout.listitem_pigeon, null);
             viewHolder = new ViewHolder();
             viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_id);
@@ -70,7 +71,6 @@ public class PigeonListAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-
         PigeonInfo pigeon = mPigeon.get(i);
         final String pigeonName = pigeon.getName();
         if (pigeonName != null && pigeonName.length() > 0)

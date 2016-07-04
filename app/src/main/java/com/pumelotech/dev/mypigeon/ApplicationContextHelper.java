@@ -10,6 +10,9 @@ public class ApplicationContextHelper extends Application {
     MainActivity mainActivity;
 
 
+
+    LeConnector leConnector;
+
     public MainActivity getMainActivity() {
         return mainActivity;
     }
@@ -18,4 +21,11 @@ public class ApplicationContextHelper extends Application {
         this.mainActivity = mainActivity;
     }
 
+    public LeConnector getLeConnector() {
+        return leConnector;
+    }
+
+    public void setLeConnector(LeConnector leConnector) {
+        this.leConnector = leConnector;
+    }
 }

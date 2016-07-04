@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -64,7 +66,25 @@ public class ManageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_input, container, false);
+        View view =  inflater.inflate(R.layout.fragment_input, container, false);
+        final EditText pigeon_name = (EditText) view.findViewById(R.id.pigeon_name);
+        final EditText pigeon_id = (EditText) view.findViewById(R.id.pigeon_id);
+        final EditText shed_id = (EditText) view.findViewById(R.id.shed_id);
+        Button commit = (Button) view.findViewById(R.id.commit);
+        commit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PigeonInfo pigeonInfo = new PigeonInfo();
+                pigeonInfo.Name = pigeon_name.getText().toString();
+                pigeonInfo.ID = pigeon_id.getText().toString();
+                pigeonInfo.ShedID = shed_id.getText().toString();
+                MyPigeonDAO myPigeonDAO=MyPigeonDAO.getInstance();
+                if (myPigeonDAO != null) {
+                    myPigeonDAO.insertPigeon(pigeonInfo);
+                }
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

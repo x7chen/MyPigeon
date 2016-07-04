@@ -16,15 +16,22 @@
 
 package com.pumelotech.dev.mypigeon;
 
+import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +40,7 @@ import java.util.UUID;
  * Service for managing connection and data communication with a GATT server hosted on a
  * given Bluetooth LE device.
  */
-public class LeConnecter {
+public class LeConnector {
     public static final String TAG = MainActivity.DebugTag;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothDevice mDevice;
@@ -51,10 +58,11 @@ public class LeConnecter {
     public final static String ERROR_WRITE_CHARACTERISTIC = "Error on writing characteristic";
     public final static String ERROR_WRITE_DESCRIPTOR = "Error on writing descriptor";
 
-
-    private LeManagerCallBacks mCallbacks;
+    private BluetoothAdapter mBluetoothAdapter;
+    private LeConnectorCallBacks mCallbacks;
     private boolean isNUSServiceFound = false;
-
+    static private LeConnector mLeConnector;
+    static private Context mContext;
     private BluetoothGattCharacteristic leUartCharacteristic;
 
     // Implements callback methods for GATT events that the app cares about.  For example,
@@ -122,11 +130,12 @@ public class LeConnecter {
         }
     };
 
-    public void registerCallbacks(LeManagerCallBacks callBacks) {
+    public void registerCallbacks(LeConnectorCallBacks callBacks) {
         mCallbacks = callBacks;
     }
 
-    public interface LeManagerCallBacks {
+
+    public interface LeConnectorCallBacks {
         void onDeviceConnected();
 
         void onDeviceDisconnected();
@@ -195,5 +204,55 @@ public class LeConnecter {
             dp.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(dp);
         }
+    }
+
+    public static LeConnector getInstance(Context context) {
+        if (mContext == null) {
+            mContext = context;
+        }
+        return getInstance();
+    }
+
+    public static LeConnector getInstance() {
+        if (mContext == null) {
+            return null;
+        }
+        if (mLeConnector == null) {
+            mLeConnector = new LeConnector();
+        }
+        return mLeConnector;
+    }
+
+
+    public LeConnector() {
+        // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
+        // BluetoothAdapter through BluetoothManager.
+        final BluetoothManager bluetoothManager =
+                (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+
+        // Checks if Bluetooth is supported on the device.
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(mContext, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                String deviceName = device.getName();
+                if (deviceName == null) {
+                    deviceName = LeAdvertiseParser.parseAdertisedData(scanRecord).getName();
+                }
+                if (deviceName != null) {
+                    if (device.getName().equals("BT05")) {
+                        connect(mContext, device);
+
+                    }
+                }
+                connect(mContext, device);
+                Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
+            }
+        });
+        Log.d(MainActivity.DebugTag, "Start Scan");
     }
 }
