@@ -5,11 +5,32 @@
     tools:context="com.pumelotech.dev.mypigeon.PigeonListFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView_pigeon"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView_pigeon"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/buttombar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/buttombar"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="New Text"
+                android:id="@+id/textView10" />
+        </LinearLayout>
+    </RelativeLayout>
+
 
 </FrameLayout>

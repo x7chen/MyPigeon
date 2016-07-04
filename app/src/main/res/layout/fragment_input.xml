@@ -30,7 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/textView6"
-                android:width="100dp" />
+                android:width="200dp"
+                android:singleLine="true" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -53,7 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/textView7"
-                android:width="100dp" />
+                android:width="200dp"
+                android:inputType="number"
+                android:singleLine="true" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -63,7 +66,7 @@
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="鸽棚："
+                android:text="鸽    棚："
                 android:textSize="18dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
@@ -75,7 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/textView8"
-                android:width="100dp" />
+                android:width="200dp"
+                android:singleLine="true" />
         </RelativeLayout>
         <Button
             android:id="@+id/commit"

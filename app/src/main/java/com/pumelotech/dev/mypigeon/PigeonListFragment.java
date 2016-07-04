@@ -3,8 +3,6 @@ package com.pumelotech.dev.mypigeon;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public class PigeonListFragment extends Fragment {
                 final PigeonInfo pigeon = mPigeonListAdapter.getPigeon(position);
                 if (pigeon == null) return;
                 Intent intent = new Intent(getActivity(), RecordActivity.class);
-                intent.putExtra("name", pigeon.getName());
+                intent.putExtra("Name", pigeon.Name);
                 startActivity(intent);
             }
         });
@@ -108,6 +108,7 @@ public class PigeonListFragment extends Fragment {
         // Inflate the layout for this fragment
         return view;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -144,7 +145,7 @@ public class PigeonListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and Name
         void onFragmentInteraction(Uri uri);
     }
 }

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -122,7 +124,7 @@ public class ManageFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and Name
         void onFragmentInteraction(Uri uri);
     }
 }

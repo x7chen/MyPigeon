@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
+
 import java.util.ArrayList;
 
 /**
@@ -71,10 +73,10 @@ public class RecordListAdapter extends BaseAdapter {
         }
 
         RecordInfo recordInfo = mRecord.get(i);
-        viewHolder.Year.setText(recordInfo.getYear());
-        viewHolder.Date.setText(recordInfo.getDate());
-        viewHolder.Time.setText(recordInfo.getTime());
-        viewHolder.Count.setText(recordInfo.getCount());
+//        viewHolder.Year.setText(recordInfo.getYear());
+//        viewHolder.Date.setText(recordInfo.getDate());
+//        viewHolder.Time.setText(recordInfo.getTime());
+//        viewHolder.Count.setText(recordInfo.getCount());
         return view;
     }
     static class ViewHolder {

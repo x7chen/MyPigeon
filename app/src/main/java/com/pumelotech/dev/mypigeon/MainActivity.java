@@ -20,6 +20,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.List;
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+    boolean Toggle;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -125,6 +127,14 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id==R.id.menu_fly){
+
+            Toggle = !Toggle;
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.buttombar);
+            if(Toggle)
+            linearLayout.setVisibility(View.GONE);
+            else
+                linearLayout.setVisibility(View.VISIBLE);
         }
 
         return super.onOptionsItemSelected(item);

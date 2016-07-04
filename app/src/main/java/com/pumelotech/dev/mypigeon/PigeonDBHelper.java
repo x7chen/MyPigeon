@@ -11,14 +11,14 @@ public class PigeonDBHelper extends SQLiteOpenHelper {
 
 
     String createPigeonTable = "Create Table IF NOT EXISTS PigeonTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
-            "NOT NULL, pigeon_id VARCHAR,name VARCHAR,shed_id VARCHAR,owner_id VARCHAR)";
+            "NOT NULL, pigeon_id VARCHAR,name VARCHAR,shed_id VARCHAR,owner_id VARCHAR,status VARCHAR)";
     String createShedTable = "Create Table IF NOT EXISTS ShedTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
-            "NOT NULL, shed_id VARCHAR,name VARCHAR,address VARCHAR)";
-    String createUserTable = "Create Table IF NOT EXISTS OwnerTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
-            "NOT NULL,user_id VARCHAR,name VARCHAR,sex VARCHAR,telephone VARCHAR,address VARCHAR)";
-    String createFlyTable = "Create Table IF NOT EXISTS FlyTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
-            "NOT NULL,pigeon_id VARCHAR,state INTEGER,start_time VARCHAR,start_shed_id VARCHAR,arrive_time VARCHAR," +
-            "arrive_shed_id VARCHAR,distance INTEGER,elapsed_time VARCHAR)";
+            "NOT NULL, shed_id VARCHAR,Name VARCHAR,address VARCHAR)";
+    String createUserTable = "Create Table IF NOT EXISTS UserTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
+            "NOT NULL,user_id VARCHAR,Name VARCHAR,Sex VARCHAR,BirthDate VARCHAR,PhoneNum VARCHAR,Address VARCHAR)";
+    String createRecordTable = "Create Table IF NOT EXISTS RecordTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
+            "NOT NULL,pigeon_id VARCHAR,status INTEGER,start_time VARCHAR,start_shed_id VARCHAR,arrive_time VARCHAR," +
+            "arrive_shed_id VARCHAR,Distance INTEGER,elapsed_time VARCHAR)";
 
     public PigeonDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -29,7 +29,7 @@ public class PigeonDBHelper extends SQLiteOpenHelper {
         db.execSQL(createPigeonTable);
         db.execSQL(createShedTable);
         db.execSQL(createUserTable);
-        db.execSQL(createFlyTable);
+        db.execSQL(createRecordTable);
     }
 
     @Override

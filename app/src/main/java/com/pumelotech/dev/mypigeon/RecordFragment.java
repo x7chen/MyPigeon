@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,18 +79,18 @@ public class RecordFragment extends Fragment {
                 final RecordInfo recordInfo = mRecordListAdapter.getRecord(position);
                 if (recordInfo == null) return;
                 Intent intent = new Intent(getActivity(),RecordActivity.class);
-                intent.putExtra("name","hello");
+                intent.putExtra("Name","hello");
                 startActivity(intent);
             }
         });
-        for(int i=0;i<10;i++) {
-            RecordInfo recordInfo = new RecordInfo();
-            recordInfo.setYear("2016年");
-            recordInfo.setDate("6月"+(i+10)+"日");
-            recordInfo.setTime((i+6)+":00");
-            recordInfo.setCount("放飞"+(i+10)+"只");
-            mRecordListAdapter.addRecord(recordInfo);
-        }
+//        for(int i=0;i<10;i++) {
+//            RecordInfo recordInfo = new RecordInfo();
+//            recordInfo.setYear("2016年");
+//            recordInfo.setDate("6月"+(i+10)+"日");
+//            recordInfo.setTime((i+6)+":00");
+//            recordInfo.setCount("放飞"+(i+10)+"只");
+//            mRecordListAdapter.addRecord(recordInfo);
+//        }
 
         mRecordListAdapter.notifyDataSetChanged();
         return view;
@@ -129,7 +131,7 @@ public class RecordFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and Name
         void onFragmentInteraction(Uri uri);
     }
 }

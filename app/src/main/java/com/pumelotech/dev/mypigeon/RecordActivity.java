@@ -11,7 +11,7 @@ public class RecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
-        String name = getIntent().getStringExtra("name");
+        String name = getIntent().getStringExtra("Name");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         toolbar.setTitle(name);

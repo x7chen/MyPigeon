@@ -2,6 +2,7 @@ package com.pumelotech.dev.mypigeon;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
 import java.util.ArrayList;
 
@@ -67,18 +70,20 @@ public class PigeonListAdapter extends BaseAdapter {
             viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_name);
             viewHolder.Icon = (ImageButton) view.findViewById(R.id.imageButton);
             viewHolder.Check = (CheckBox) view.findViewById(R.id.checkBox);
+            Log.i(MainActivity.DebugTag,"getView:"+i);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
+
         PigeonInfo pigeon = mPigeon.get(i);
-        final String pigeonName = pigeon.getName();
+        final String pigeonName = pigeon.Name;
         if (pigeonName != null && pigeonName.length() > 0)
             viewHolder.PigeonName.setText(pigeonName);
         else
             viewHolder.PigeonName.setText(R.string.no_name);
-        viewHolder.PigeonID.setText(pigeon.getID());
-        final String pigeonStatus = pigeon.getStatus();
+        viewHolder.PigeonID.setText(pigeon.ID);
+        final String pigeonStatus = pigeon.Status;
         if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
             viewHolder.Icon.setEnabled(true);
             viewHolder.Check.setVisibility(View.INVISIBLE);

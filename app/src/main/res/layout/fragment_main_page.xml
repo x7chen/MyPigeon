@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#00000000"
-            android:src="@mipmap/fly"
+            android:src="@mipmap/flying"
             android:layout_marginLeft="80dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="50dp"
