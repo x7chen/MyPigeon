@@ -46,6 +46,7 @@ public class MyPigeonDAO {
             pigeon.Status=cs.getString(cs.getColumnIndex("name"));
             pigeonInfoList.add(pigeon);
         }
+        cs.close();
         return pigeonInfoList;
     }
     public void insertPigeon(PigeonInfo pigeonInfo){
