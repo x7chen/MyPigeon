@@ -12,179 +12,204 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="10dp">
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="#b6dce7"
-            android:id="@+id/layout_title"
-            android:padding="5dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/pigeon_name"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/layout_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:text="信使1号"
-                android:maxLength="6"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+                android:layout_alignParentTop="true"
+                android:background="@color/accent_material_dark"
+                android:padding="5dp">
 
-            <TextView
-                android:id="@+id/pigeon_id"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:layout_alignParentBottom="false"
-                android:layout_alignParentStart="false"
-                android:layout_toRightOf="@+id/pigeon_name"
-                android:text="ID:1234567890"
-                android:singleLine="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
-            <TextView
-                android:id="@+id/pigeon_status"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:layout_alignParentRight="true"
-                android:text="飞行中" />
+                <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
+                    android:id="@+id/pigeon_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:maxLength="6"
+                    android:text="信使1号"
+                    android:textColor="@android:color/black"
+                    android:textSize="16dp" />
 
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/layout_content"
-            android:layout_below="@+id/layout_title"
-            android:padding="5dp">
-            <TextView
-                android:id="@+id/fly_times_tag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:text="飞行次数："
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@android:color/black" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/fly_times"
-                android:text="14"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/fly_times_tag"
-                android:textSize="16dp"
-                android:layout_marginRight="10dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/total_time_tag"
-                android:text="飞行时间："
-                android:textSize="16dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/fly_times"
-                android:layout_alignParentTop="true"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/total_time"
-                android:text="52时34分"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/total_time_tag"
-                android:layout_alignParentTop="true"
-                android:textSize="16dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/total_distance_tag"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:text=" 总 里 程："
-                android:layout_below="@+id/fly_times_tag"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_alignParentLeft="true"
-                android:layout_marginTop="5dp"
-                android:textColor="@android:color/black" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/total_distance"
-                android:layout_toRightOf="@+id/total_distance_tag"
-                android:layout_below="@+id/fly_times_tag"
-                android:textSize="16dp"
-                android:text="859Km"
-                android:layout_marginTop="5dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/birth_date_tag"
-                android:textSize="16dp"
-                android:textStyle="bold"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_below="@+id/total_distance_tag"
-                android:layout_alignParentLeft="true"
-                android:text="出生日期："
-                android:layout_marginTop="5dp"
-                android:textColor="@android:color/black" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/birth_date"
-                android:text="2015年10月3日"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/birth_date_tag"
-                android:layout_below="@+id/total_distance_tag"
-                android:textSize="16dp"
-                android:layout_marginTop="5dp" />
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="20dp"
-                android:id="@+id/item_edit_button"
-                android:textSize="14dp"
-                android:text="编辑"
-                android:layout_alignParentBottom="false"
-                android:background="@drawable/button_shape"
-                android:padding="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_alignBottom="@+id/birth_date_tag"
-                android:layout_marginRight="20dp"
-                android:layout_toLeftOf="@+id/pigeon_fly_button" />
-            <Button
-                android:layout_width="40dp"
-                android:layout_height="20dp"
-                android:id="@+id/pigeon_fly_button"
-                android:background="@drawable/button_shape"
-                android:padding="0dp"
-                android:layout_marginTop="5dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="false"
-                android:layout_alignBottom="@+id/birth_date_tag"
-                android:text="放飞"
-                android:layout_marginRight="20dp"
-                android:textSize="14dp" />
+                <TextView
+                    android:id="@+id/pigeon_id"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentStart="false"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/pigeon_name"
+                    android:singleLine="true"
+                    android:text="ID:1234567890"
+                    android:textSize="16dp" />
+
+                <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
+                    android:id="@+id/pigeon_status"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="飞行中"
+                    android:textColor="#404040"
+                    android:textSize="14dp" />
+
             </RelativeLayout>
 
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+            <RelativeLayout
+                android:id="@+id/layout_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layout_title"
+                android:padding="5dp">
+
+                <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
+                    android:id="@+id/fly_times_tag"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="10dp"
+                    android:text="飞行次数："
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:gravity="right" />
+
+                <TextView
+                    android:id="@+id/fly_times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/fly_times_tag"
+                    android:text="14"
+                    android:textSize="14dp"
+                    android:layout_alignBottom="@+id/fly_times_tag" />
+
+                <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
+                    android:id="@+id/total_time_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="飞行时间："
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:layout_alignBottom="@+id/fly_times_tag"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:id="@+id/total_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/total_time_tag"
+                    android:text="52时34分"
+                    android:textSize="14dp"
+                    android:layout_alignBottom="@+id/fly_times_tag" />
+
+                <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
+                    android:id="@+id/total_distance_tag"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/fly_times_tag"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="总 里 程："
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:gravity="right" />
+
+                <TextView
+                    android:id="@+id/total_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/total_distance_tag"
+                    android:text="859Km"
+                    android:textSize="14dp"
+                    android:layout_alignBottom="@+id/total_distance_tag" />
+
+                <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
+                    android:id="@+id/birth_date_tag"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/total_distance_tag"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="出生日期："
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:gravity="right" />
+
+                <TextView
+                    android:id="@+id/birth_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/birth_date_tag"
+                    android:text="2015年10月3日"
+                    android:textSize="14dp"
+                    android:layout_alignBottom="@+id/birth_date_tag" />
+
+                <Button
+                    android:id="@+id/pigeon_item_edit_button"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:layout_alignBottom="@+id/pigeon_fly_button"
+                    android:layout_alignParentBottom="false"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toLeftOf="@+id/pigeon_fly_button"
+                    android:background="@drawable/button_shape"
+                    android:padding="0dp"
+                    android:text="编辑"
+                    android:textSize="14dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"  />
+
+                <Button
+                    android:id="@+id/pigeon_fly_button"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:layout_alignBottom="@+id/birth_date_tag"
+                    android:layout_alignParentBottom="false"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/button_shape"
+                    android:padding="0dp"
+                    android:text="放飞"
+                    android:textSize="14dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"  />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

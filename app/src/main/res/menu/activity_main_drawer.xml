@@ -9,20 +9,12 @@
         <item
             android:id="@+id/nav_fly"
             android:icon="@drawable/ic_menu_share"
-            android:title="开始放飞" />
+            android:title="管理" />
 
-        <item
-            android:id="@+id/nav_record"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="放飞记录" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Other">
         <menu>
-            <item
-                android:id="@+id/nav_input"
-                android:icon="@drawable/ic_menu_share"
-                android:title="录入信息" />
             <item
                 android:id="@+id/nav_help"
                 android:icon="@drawable/ic_menu_send"

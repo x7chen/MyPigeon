@@ -1,6 +1,8 @@
-package com.pumelotech.dev.mypigeon;
+package com.pumelotech.dev.mypigeon.BLE;
 
 import android.util.Log;
+
+import com.pumelotech.dev.mypigeon.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;

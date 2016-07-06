@@ -6,6 +6,7 @@ package com.pumelotech.dev.mypigeon.DataType;
 public class PigeonInfo {
     public String Name;
     public String ID;
+    public String BirthDate;
     public String OwnerID;
     public String ShedID;
     public String Status;

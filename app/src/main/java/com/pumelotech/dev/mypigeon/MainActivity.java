@@ -2,13 +2,6 @@ package com.pumelotech.dev.mypigeon;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanResult;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -17,26 +10,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import java.util.List;
+import com.pumelotech.dev.mypigeon.BLE.PacketParser;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PigeonListFragment.OnFragmentInteractionListener {
 
-    static final String DebugTag = "MyPigeon";
+    public static final String DebugTag = "MyPigeon";
     private MainPageFragment mainPageFragment;
     private PigeonListFragment pigeonListFragment;
-    private RecordFragment recordFragment;
-    private ManageFragment manageFragment;
     private HelpFragment helpFragment;
     private PacketParser mPacketParser;
-    ApplicationContextHelper applicationContextHelper;
+    MyApplication myApplication;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,20 +62,6 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction transaction = fm.beginTransaction();
         pigeonListFragment = new PigeonListFragment();
         transaction.replace(R.id.main_fragment_container, pigeonListFragment);
-        transaction.commit();
-    }
-    private void setRecordFragment() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        recordFragment = new RecordFragment();
-        transaction.replace(R.id.main_fragment_container, recordFragment);
-        transaction.commit();
-    }
-    private void setInputFragment() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        manageFragment = new ManageFragment();
-        transaction.replace(R.id.main_fragment_container, manageFragment);
         transaction.commit();
     }
 
@@ -130,11 +103,6 @@ public class MainActivity extends AppCompatActivity
         }else if(id==R.id.menu_fly){
 
             Toggle = !Toggle;
-            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.buttombar);
-            if(Toggle)
-            linearLayout.setVisibility(View.GONE);
-            else
-                linearLayout.setVisibility(View.VISIBLE);
         }
 
         return super.onOptionsItemSelected(item);
@@ -150,10 +118,6 @@ public class MainActivity extends AppCompatActivity
             setMainPageFragment();
         } else if (id == R.id.nav_fly) {
             setPigeonListFragment();
-        } else if (id == R.id.nav_record) {
-            setRecordFragment();
-        } else if (id == R.id.nav_input) {
-            setInputFragment();
         } else if (id == R.id.nav_help) {
             setHelpFragment();
         }

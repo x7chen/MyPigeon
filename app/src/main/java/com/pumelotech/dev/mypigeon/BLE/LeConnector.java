@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.pumelotech.dev.mypigeon;
+package com.pumelotech.dev.mypigeon.BLE;
 
-import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -27,11 +26,11 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.pumelotech.dev.mypigeon.MainActivity;
+import com.pumelotech.dev.mypigeon.R;
 
 import java.util.List;
 import java.util.UUID;

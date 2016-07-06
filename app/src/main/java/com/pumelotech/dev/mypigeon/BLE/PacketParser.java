@@ -1,4 +1,4 @@
-package com.pumelotech.dev.mypigeon;
+package com.pumelotech.dev.mypigeon.BLE;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

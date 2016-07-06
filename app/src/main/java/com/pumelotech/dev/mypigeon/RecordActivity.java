@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ListView;
+
+import com.pumelotech.dev.mypigeon.Adapter.RecordListAdapter;
+import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
 
 public class RecordActivity extends AppCompatActivity {
 
@@ -23,5 +27,14 @@ public class RecordActivity extends AppCompatActivity {
                 finish();
             }
         });
+        ListView listView = (ListView) findViewById(R.id.listView_record);
+        final RecordListAdapter mRecordListAdapter= new RecordListAdapter(this);
+        listView.setAdapter(mRecordListAdapter);
+        for(int i=0;i<10;i++) {
+            RecordInfo recordInfo = new RecordInfo();
+            mRecordListAdapter.addRecord(recordInfo);
+        }
+
+        mRecordListAdapter.notifyDataSetChanged();
     }
 }

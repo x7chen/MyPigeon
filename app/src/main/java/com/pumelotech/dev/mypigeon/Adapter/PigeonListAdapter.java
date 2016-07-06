@@ -1,17 +1,22 @@
-package com.pumelotech.dev.mypigeon;
+package com.pumelotech.dev.mypigeon.Adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
+import com.pumelotech.dev.mypigeon.MainActivity;
+import com.pumelotech.dev.mypigeon.PigeonEditActivity;
+import com.pumelotech.dev.mypigeon.R;
 
 import java.util.ArrayList;
 
@@ -21,9 +26,10 @@ import java.util.ArrayList;
 public class PigeonListAdapter extends BaseAdapter {
     private ArrayList<PigeonInfo> mPigeon;
     private LayoutInflater mInflator;
-
+    private Context mContext;
     public PigeonListAdapter(Context context) {
         super();
+        mContext = context;
         mPigeon = new ArrayList<PigeonInfo>();
 //        mInflator = fragment.getLayoutInflater();
         mInflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -68,19 +74,26 @@ public class PigeonListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_id);
             viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_name);
+            viewHolder.editButton = (Button) view.findViewById(R.id.pigeon_item_edit_button);
             Log.i(MainActivity.DebugTag,"getView:"+i);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-
+        final Context context = mContext;
+        viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, PigeonEditActivity.class));
+            }
+        });
         PigeonInfo pigeon = mPigeon.get(i);
         final String pigeonName = pigeon.Name;
         if (pigeonName != null && pigeonName.length() > 0)
             viewHolder.PigeonName.setText(pigeonName);
         else
             viewHolder.PigeonName.setText(R.string.no_name);
-        viewHolder.PigeonID.setText(pigeon.ID);
+        viewHolder.PigeonID.setText("ID:"+pigeon.ID);
         final String pigeonStatus = pigeon.Status;
         if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
 
@@ -92,6 +105,7 @@ public class PigeonListAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView PigeonName;
         TextView PigeonID;
+        Button editButton;
     }
 }
 

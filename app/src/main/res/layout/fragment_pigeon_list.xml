@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.pumelotech.dev.mypigeon.PigeonListFragment">
+    tools:context="com.pumelotech.dev.mypigeon.PigeonListFragment"
+    android:background="@drawable/bk">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
@@ -16,22 +17,24 @@
             android:layout_alignParentEnd="true"
             android:layout_above="@+id/buttombar"
             android:divider="#00000000"
-            android:dividerHeight="12dp" />
+            android:dividerHeight="5dp" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:id="@+id/buttombar"
-            android:layout_gravity="center_horizontal|bottom"
             android:layout_alignParentBottom="true"
-            android:visibility="gone">
+            android:visibility="visible">
 
-            <TextView
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:text="New Text"
-                android:id="@+id/textView10" />
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="+ 添加鸽子"
+                android:id="@+id/BT_addPigeon"
+                android:textSize="16dp"
+                android:layout_centerInParent="true"
+                android:textAlignment="center" />
+        </RelativeLayout>
     </RelativeLayout>
 
 

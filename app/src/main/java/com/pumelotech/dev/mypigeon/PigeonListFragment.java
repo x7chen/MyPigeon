@@ -11,8 +11,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
+import com.pumelotech.dev.mypigeon.Adapter.PigeonListAdapter;
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
 import java.util.List;
@@ -81,6 +83,13 @@ public class PigeonListFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pigeon_list, container, false);
+        Button BT_addPigeon = (Button) view.findViewById(R.id.BT_addPigeon);
+        BT_addPigeon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),PigeonEditActivity.class));
+            }
+        });
         ListView listView = (ListView) view.findViewById(R.id.listView_pigeon);
         final PigeonListAdapter mPigeonListAdapter = new PigeonListAdapter(getActivity());
         listView.setAdapter(mPigeonListAdapter);

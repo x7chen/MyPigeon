@@ -1,4 +1,4 @@
-package com.pumelotech.dev.mypigeon;
+package com.pumelotech.dev.mypigeon.Adapter;
 
 
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
+import com.pumelotech.dev.mypigeon.R;
 
 import java.util.ArrayList;
 
@@ -61,12 +62,6 @@ public class RecordListAdapter extends BaseAdapter {
         if (view == null) {
             view = mInflator.inflate(R.layout.listitem_record, null);
             viewHolder = new ViewHolder();
-            viewHolder.Year = (TextView) view.findViewById(R.id.recorditem_year);
-            viewHolder.Date = (TextView) view.findViewById(R.id.recorditem_month);
-            viewHolder.Time = (TextView) view.findViewById(R.id.recorditem_time);
-            viewHolder.Count = (TextView) view.findViewById(R.id.recorditem_count);
-            viewHolder.Address = (TextView) view.findViewById(R.id.recorditem_address);
-            viewHolder.Other = (TextView) view.findViewById(R.id.recorditem_other);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
