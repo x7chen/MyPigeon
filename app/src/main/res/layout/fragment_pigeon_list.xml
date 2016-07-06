@@ -14,7 +14,9 @@
             android:id="@+id/listView_pigeon"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_above="@+id/buttombar" />
+            android:layout_above="@+id/buttombar"
+            android:divider="#00000000"
+            android:dividerHeight="12dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -68,8 +68,6 @@ public class PigeonListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_id);
             viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_name);
-            viewHolder.Icon = (ImageButton) view.findViewById(R.id.imageButton);
-            viewHolder.Check = (CheckBox) view.findViewById(R.id.checkBox);
             Log.i(MainActivity.DebugTag,"getView:"+i);
             view.setTag(viewHolder);
         } else {
@@ -85,11 +83,8 @@ public class PigeonListAdapter extends BaseAdapter {
         viewHolder.PigeonID.setText(pigeon.ID);
         final String pigeonStatus = pigeon.Status;
         if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
-            viewHolder.Icon.setEnabled(true);
-            viewHolder.Check.setVisibility(View.INVISIBLE);
+
         } else {
-            viewHolder.Icon.setEnabled(false);
-            viewHolder.Check.setVisibility(View.VISIBLE);
         }
         return view;
     }
@@ -97,8 +92,6 @@ public class PigeonListAdapter extends BaseAdapter {
     static class ViewHolder {
         TextView PigeonName;
         TextView PigeonID;
-        ImageButton Icon;
-        CheckBox Check;
     }
 }
 
