@@ -1,25 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    android:layout_height="match_parent">
 
     <include
-        layout="@layout/app_bar_main"
+        layout="@layout/app_bar_setting"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <android.support.design.widget.NavigationView
+    <RelativeLayout
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        android:layout_marginTop="80dp"
+        android:fitsSystemWindows="true">
 
-</android.support.v4.widget.DrawerLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <ImageButton
+                    android:id="@+id/imageButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="left|top"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="30dp"
+                    android:background="#00000000"
+                    android:src="@mipmap/icon" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageButton2"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="90dp"
+                    android:text="在棚" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="100dp"
+                    android:text="30"
+                    android:textSize="32dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageButton
+                    android:id="@+id/imageButton3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginTop="30dp"
+                    android:background="#00000000"
+                    android:src="@mipmap/flying" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageButton3"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="80dp"
+                    android:text="飞行中" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginRight="100dp"
+                    android:text="10"
+                    android:textSize="32dp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="管理鸽子"
+            android:id="@+id/BT_managerPigeon"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="57dp" />
+    </RelativeLayout>
+
+</RelativeLayout>

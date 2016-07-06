@@ -28,7 +28,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PigeonEditActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".PigeonListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

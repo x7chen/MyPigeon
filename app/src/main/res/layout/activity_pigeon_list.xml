@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PigeonListActivity">
+    <include
+        layout="@layout/app_bar_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="80dp">
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView_pigeon"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/bottom_bar"
+            android:divider="#00000000"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/bottom_bar"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ 添加鸽子"
+                android:id="@+id/BT_addPigeon"
+                android:textSize="16dp"
+                android:layout_centerInParent="true"
+                android:textAlignment="center" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

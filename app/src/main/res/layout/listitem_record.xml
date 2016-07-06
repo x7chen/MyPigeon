@@ -133,7 +133,8 @@
                 android:textSize="14dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/record_item_distance_tag"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:textColor="#038281" />
             <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
                 android:id="@+id/record_item_elapsed_time_tag"
                 android:layout_width="wrap_content"
