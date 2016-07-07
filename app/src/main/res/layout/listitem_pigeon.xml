@@ -40,7 +40,7 @@
                 android:padding="5dp">
 
                 <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
-                    android:id="@+id/pigeon_name"
+                    android:id="@+id/pigeon_item_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -51,26 +51,28 @@
                     android:textSize="16dp" />
 
                 <TextView
-                    android:id="@+id/pigeon_id"
+                    android:id="@+id/pigeon_item_id"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="false"
                     android:layout_alignParentStart="false"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_toRightOf="@+id/pigeon_name"
+                    android:layout_toRightOf="@+id/pigeon_item_name"
                     android:singleLine="true"
                     android:text="ID:1234567890"
                     android:textSize="16dp" />
 
                 <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
-                    android:id="@+id/pigeon_status"
+                    android:id="@+id/pigeon_item_status"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="飞行中"
                     android:textColor="#404040"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"
+                    android:gravity="right"
+                    android:layout_marginRight="10dp" />
 
             </RelativeLayout>
 
@@ -95,7 +97,7 @@
                     android:gravity="right" />
 
                 <TextView
-                    android:id="@+id/fly_times"
+                    android:id="@+id/pigeon_item_fly_times"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -118,7 +120,7 @@
                     android:layout_centerHorizontal="true" />
 
                 <TextView
-                    android:id="@+id/total_time"
+                    android:id="@+id/pigeon_item_total_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -142,7 +144,7 @@
                     android:gravity="right" />
 
                 <TextView
-                    android:id="@+id/total_distance"
+                    android:id="@+id/pigeon_item_total_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -166,7 +168,7 @@
                     android:gravity="right" />
 
                 <TextView
-                    android:id="@+id/birth_date"
+                    android:id="@+id/pigeon_item_birth_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -180,11 +182,11 @@
                     android:id="@+id/pigeon_item_edit_button"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
-                    android:layout_alignBottom="@+id/pigeon_fly_button"
+                    android:layout_alignBottom="@+id/pigeon_item_fly_button"
                     android:layout_alignParentBottom="false"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"
-                    android:layout_toLeftOf="@+id/pigeon_fly_button"
+                    android:layout_toLeftOf="@+id/pigeon_item_fly_button"
                     android:background="@drawable/button_shape"
                     android:padding="0dp"
                     android:text="编辑"
@@ -193,7 +195,7 @@
                     android:focusableInTouchMode="false"  />
 
                 <Button
-                    android:id="@+id/pigeon_fly_button"
+                    android:id="@+id/pigeon_item_fly_button"
                     android:layout_width="40dp"
                     android:layout_height="20dp"
                     android:layout_alignBottom="@+id/birth_date_tag"

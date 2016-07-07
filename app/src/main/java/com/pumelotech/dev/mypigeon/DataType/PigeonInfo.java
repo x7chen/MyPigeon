@@ -10,4 +10,8 @@ public class PigeonInfo {
     public String OwnerID;
     public String ShedID;
     public String Status;
+    public String TotalDistance;
+    public String TotalTime;
+    public String FlyTimes;
+    public String FlyEnable;
 }

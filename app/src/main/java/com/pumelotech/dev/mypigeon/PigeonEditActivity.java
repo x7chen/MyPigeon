@@ -55,6 +55,8 @@ public class PigeonEditActivity extends AppCompatActivity {
                 if (myPigeonDAO != null) {
                     myPigeonDAO.insertPigeon(pigeonInfo);
                 }
+                MyApplication.getPigeonListAdapter().addPigeon(pigeonInfo);
+                MyApplication.getPigeonListAdapter().notifyDataSetChanged();
                 finish();
                 break;
             default:

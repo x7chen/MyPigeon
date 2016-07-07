@@ -19,6 +19,7 @@ import java.util.List;
 
 public class PigeonListActivity extends AppCompatActivity {
 
+    PigeonListAdapter mPigeonListAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +41,9 @@ public class PigeonListActivity extends AppCompatActivity {
             }
         });
         ListView listView = (ListView) findViewById(R.id.listView_pigeon);
-        final PigeonListAdapter mPigeonListAdapter = new PigeonListAdapter(this);
+        mPigeonListAdapter = new PigeonListAdapter(this);
+
+        MyApplication.savePigeonListAdapter(mPigeonListAdapter);
         listView.setAdapter(mPigeonListAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,6 +76,22 @@ public class PigeonListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.menu_fly){
+            if(item.getTitle().toString().equals("开始放飞")) {
+                for (int i = 0; i < mPigeonListAdapter.getCount(); i++) {
+                    mPigeonListAdapter.getPigeon(i).FlyEnable = "Enable";
+                }
+                mPigeonListAdapter.notifyDataSetChanged();
+                item.setTitle("结束放飞");
+            }else {
+                for (int i = 0; i < mPigeonListAdapter.getCount(); i++) {
+                    mPigeonListAdapter.getPigeon(i).FlyEnable = "Disable";
+                }
+                mPigeonListAdapter.notifyDataSetChanged();
+                item.setTitle("开始放飞");
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 }

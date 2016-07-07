@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
@@ -27,6 +25,7 @@ public class PigeonListAdapter extends BaseAdapter {
     private ArrayList<PigeonInfo> mPigeon;
     private LayoutInflater mInflator;
     private Context mContext;
+
     public PigeonListAdapter(Context context) {
         super();
         mContext = context;
@@ -72,13 +71,30 @@ public class PigeonListAdapter extends BaseAdapter {
             //此处的绘制（inflate）最耗时，这也是viewholder存在的必要
             view = mInflator.inflate(R.layout.listitem_pigeon, null);
             viewHolder = new ViewHolder();
-            viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_id);
-            viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_name);
+            viewHolder.PigeonID = (TextView) view.findViewById(R.id.pigeon_item_id);
+            viewHolder.PigeonName = (TextView) view.findViewById(R.id.pigeon_item_name);
+            viewHolder.PigeonStatus = (TextView) view.findViewById(R.id.pigeon_item_status);
             viewHolder.editButton = (Button) view.findViewById(R.id.pigeon_item_edit_button);
-            Log.i(MainActivity.DebugTag,"getView:"+i);
+            viewHolder.flyButton = (Button) view.findViewById(R.id.pigeon_item_fly_button);
+            Log.i(MainActivity.DebugTag, "getView:" + i);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
+        }
+        final PigeonInfo pigeon = mPigeon.get(i);
+        final String pigeonName = pigeon.Name;
+        if (pigeonName != null && pigeonName.length() > 0)
+            viewHolder.PigeonName.setText(pigeonName);
+        else
+            viewHolder.PigeonName.setText(R.string.no_name);
+
+        viewHolder.PigeonID.setText("ID:" + pigeon.ID);
+
+        final String pigeonStatus = pigeon.Status;
+        if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
+            viewHolder.PigeonStatus.setText("飞行中");
+        } else {
+            viewHolder.PigeonStatus.setText("在棚");
         }
         final Context context = mContext;
         viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -87,25 +103,30 @@ public class PigeonListAdapter extends BaseAdapter {
                 context.startActivity(new Intent(context, PigeonEditActivity.class));
             }
         });
-        PigeonInfo pigeon = mPigeon.get(i);
-        final String pigeonName = pigeon.Name;
-        if (pigeonName != null && pigeonName.length() > 0)
-            viewHolder.PigeonName.setText(pigeonName);
-        else
-            viewHolder.PigeonName.setText(R.string.no_name);
-        viewHolder.PigeonID.setText("ID:"+pigeon.ID);
-        final String pigeonStatus = pigeon.Status;
-        if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
-
+        final ViewHolder viewHolder1 = viewHolder;
+        viewHolder.flyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pigeon.Status = "FLY";
+                viewHolder1.PigeonStatus.setText("飞行中");
+                viewHolder1.flyButton.setEnabled(false);
+            }
+        });
+        if ((pigeon.FlyEnable != null) && pigeon.FlyEnable.equals("Enable")) {
+            viewHolder.flyButton.setVisibility(View.VISIBLE);
         } else {
+            viewHolder.flyButton.setVisibility(View.INVISIBLE);
         }
+
         return view;
     }
 
     static class ViewHolder {
         TextView PigeonName;
         TextView PigeonID;
+        TextView PigeonStatus;
         Button editButton;
+        Button flyButton;
     }
 }
 
