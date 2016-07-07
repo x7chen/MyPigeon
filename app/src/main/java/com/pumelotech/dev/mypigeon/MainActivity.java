@@ -13,7 +13,7 @@ import com.pumelotech.dev.mypigeon.BLE.PacketParser;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String DebugTag = "MyPigeon";
+    public static String DebugTag = MyApplication.DebugTag;
     private PacketParser mPacketParser;
     MyApplication myApplication;
 

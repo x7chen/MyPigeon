@@ -3,15 +3,19 @@ package com.pumelotech.dev.mypigeon;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
-import com.pumelotech.dev.mypigeon.Adapter.PigeonListAdapter;
+import com.pumelotech.dev.mypigeon.Adapter.HidingScrollListener;
+import com.pumelotech.dev.mypigeon.Adapter.PigeonRecyclerAdapter;
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
 import java.util.List;
@@ -19,40 +23,30 @@ import java.util.List;
 
 public class PigeonListActivity extends AppCompatActivity {
 
-    PigeonListAdapter mPigeonListAdapter;
+    PigeonRecyclerAdapter mPigeonRecyclerAdapter;
+    Toolbar mToolbar;
+    ImageButton mFabButton;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pigeon_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_list);
+        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setTitle("我的鸽子");
+        //setSupportActionBar 用于设置menu选项
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        Button BT_addPigeon = (Button) findViewById(R.id.BT_addPigeon);
-        BT_addPigeon.setOnClickListener(new View.OnClickListener() {
+        MyApplication.pigeonListActivity = this;
+        mFabButton = (ImageButton) findViewById(R.id.BT_addPigeon);
+        mFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PigeonListActivity.this,PigeonEditActivity.class));
-            }
-        });
-        ListView listView = (ListView) findViewById(R.id.listView_pigeon);
-        mPigeonListAdapter = new PigeonListAdapter(this);
-
-        MyApplication.savePigeonListAdapter(mPigeonListAdapter);
-        listView.setAdapter(mPigeonListAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final PigeonInfo pigeon = mPigeonListAdapter.getPigeon(position);
-                if (pigeon == null) return;
-                Intent intent = new Intent(PigeonListActivity.this, RecordActivity.class);
-                intent.putExtra("Name", pigeon.Name);
-                startActivity(intent);
+                startActivity(new Intent(PigeonListActivity.this, PigeonEditActivity.class));
             }
         });
         MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
@@ -60,14 +54,39 @@ public class PigeonListActivity extends AppCompatActivity {
         if (myPigeonDAO != null) {
             allPigeon = myPigeonDAO.getAllPigeon();
         }
-        if (allPigeon != null) {
-            for (PigeonInfo pigeon : allPigeon) {
-                mPigeonListAdapter.addPigeon(pigeon);
+        MyApplication.mPigeonList = allPigeon;
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView_pigeon);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mPigeonRecyclerAdapter= new PigeonRecyclerAdapter(allPigeon);
+        recyclerView.setAdapter(mPigeonRecyclerAdapter);
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
-        }
-        mPigeonListAdapter.notifyDataSetChanged();
+        });
+        recyclerView.setOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                hideViews();
+            }
+            @Override
+            public void onShow() {
+                showViews();
+            }
+        });
+    }
+    private void hideViews() {
+        mToolbar.animate().translationY(-mToolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFabButton.getLayoutParams();
+        int fabBottomMargin = lp.bottomMargin;
+        mFabButton.animate().translationY(mFabButton.getHeight()+fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
     }
 
+    private void showViews() {
+        mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
+        mFabButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.fly, menu);
@@ -77,18 +96,18 @@ public class PigeonListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.menu_fly){
-            if(item.getTitle().toString().equals("开始放飞")) {
-                for (int i = 0; i < mPigeonListAdapter.getCount(); i++) {
-                    mPigeonListAdapter.getPigeon(i).FlyEnable = "Enable";
+        if (id == R.id.menu_fly) {
+            if (item.getTitle().toString().equals("开始放飞")) {
+                for (PigeonInfo pigeon : MyApplication.mPigeonList) {
+                    pigeon.FlyEnable = "Enable";
                 }
-                mPigeonListAdapter.notifyDataSetChanged();
+                mPigeonRecyclerAdapter.notifyDataSetChanged();
                 item.setTitle("结束放飞");
-            }else {
-                for (int i = 0; i < mPigeonListAdapter.getCount(); i++) {
-                    mPigeonListAdapter.getPigeon(i).FlyEnable = "Disable";
+            } else {
+                for (PigeonInfo pigeon : MyApplication.mPigeonList) {
+                    pigeon.FlyEnable = "Disable";
                 }
-                mPigeonListAdapter.notifyDataSetChanged();
+                mPigeonRecyclerAdapter.notifyDataSetChanged();
                 item.setTitle("开始放飞");
             }
         }

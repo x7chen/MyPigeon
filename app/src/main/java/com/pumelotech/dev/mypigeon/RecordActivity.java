@@ -16,12 +16,12 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
         String name = getIntent().getStringExtra("Name");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
-        toolbar.setTitle(name);
-        toolbar.setSubtitle("飞行记录");
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_record);
+        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setTitle(name);
+        mToolbar.setSubtitle("飞行记录");
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
