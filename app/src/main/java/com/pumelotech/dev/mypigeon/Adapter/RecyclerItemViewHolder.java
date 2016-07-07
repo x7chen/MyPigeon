@@ -40,7 +40,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         flyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition());
+                PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition()-1);
                 pigeon.Status = "FLY";
                 PigeonStatus.setText("飞行中");
                 flyButton.setEnabled(false);
@@ -58,7 +58,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
 
     @Override
     public void onClick(View v) {
-        final PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition());
+        final PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition()-1);
         if (pigeon == null) return;
         Intent intent = new Intent(MyApplication.pigeonListActivity, RecordActivity.class);
         intent.putExtra("Name", pigeon.Name);

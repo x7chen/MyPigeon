@@ -28,10 +28,12 @@ public class PigeonEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pigeon_edit);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
-        toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_edit);
+        mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setTitle("编辑");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

@@ -33,6 +33,7 @@ public class PigeonListActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_list);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setTitle("我的鸽子");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         //setSupportActionBar 用于设置menu选项
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -58,6 +59,7 @@ public class PigeonListActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView_pigeon);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mPigeonRecyclerAdapter= new PigeonRecyclerAdapter(allPigeon);
+        MyApplication.pigeonRecyclerAdapter = mPigeonRecyclerAdapter;
         recyclerView.setAdapter(mPigeonRecyclerAdapter);
         recyclerView.setOnClickListener(new View.OnClickListener() {
             @Override

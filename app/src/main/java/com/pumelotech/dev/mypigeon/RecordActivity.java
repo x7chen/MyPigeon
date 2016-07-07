@@ -18,6 +18,8 @@ public class RecordActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("Name");
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_record);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
+        mToolbar.setSubtitleTextColor(getResources().getColor(R.color.colorWhite));
         mToolbar.setTitle(name);
         mToolbar.setSubtitle("飞行记录");
         setSupportActionBar(mToolbar);

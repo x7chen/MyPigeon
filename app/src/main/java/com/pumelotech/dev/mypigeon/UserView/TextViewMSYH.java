@@ -1,8 +1,6 @@
 package com.pumelotech.dev.mypigeon.UserView;
 
-import android.app.Application;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 

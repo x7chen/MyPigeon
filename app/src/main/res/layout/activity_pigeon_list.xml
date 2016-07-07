@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".PigeonListActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -13,6 +14,7 @@
         android:id="@+id/toolbar_pigeon_list"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        app:theme="@style/ToolbarTheme"
         android:background="@color/colorPrimaryDark" />
     <ImageButton
         android:id="@+id/BT_addPigeon"
@@ -23,6 +25,6 @@
         android:layout_marginRight="16dp"
         android:background="@drawable/fab_background"
         android:contentDescription="@null"
-        android:src="@android:drawable/ic_input_add" />
+        android:src="@mipmap/ic_input_add" />
 
 </FrameLayout>
