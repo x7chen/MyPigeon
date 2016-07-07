@@ -93,8 +93,10 @@ public class PigeonListAdapter extends BaseAdapter {
         final String pigeonStatus = pigeon.Status;
         if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
             viewHolder.PigeonStatus.setText("飞行中");
+            viewHolder.flyButton.setEnabled(false);
         } else {
             viewHolder.PigeonStatus.setText("在棚");
+            viewHolder.flyButton.setEnabled(true);
         }
         final Context context = mContext;
         viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
