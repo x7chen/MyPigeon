@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
+import com.pumelotech.dev.mypigeon.MyApplication;
 import com.pumelotech.dev.mypigeon.PigeonEditActivity;
 import com.pumelotech.dev.mypigeon.R;
 
@@ -61,9 +62,23 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             viewHolder.PigeonName.setText(pigeonName);
         else
             viewHolder.PigeonName.setText(R.string.no_name);
-
         viewHolder.PigeonID.setText("ID:" + pigeon.ID);
-
+        if(pigeon.FlyTimes==null){
+            viewHolder.FlyTimes.setText("0");
+        }else {
+            viewHolder.FlyTimes.setText(pigeon.FlyTimes);
+        }
+        if(pigeon.TotalTime==null) {
+            viewHolder.TotalTime.setText("0时0分");
+        }else {
+            viewHolder.TotalTime.setText(pigeon.TotalTime);
+        }
+        if(pigeon.TotalDistance==null){
+            viewHolder.TotalDistance.setText("0Km");
+        }else {
+            viewHolder.TotalDistance.setText(pigeon.TotalDistance);
+        }
+        viewHolder.BirthDate.setText( pigeon.BirthDate);
         final String pigeonStatus = pigeon.Status;
         if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
             viewHolder.PigeonStatus.setText("飞行中");
@@ -73,7 +88,7 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             viewHolder.flyButton.setEnabled(true);
         }
 
-        if ((pigeon.FlyEnable != null) && pigeon.FlyEnable.equals("Enable")) {
+        if (MyApplication.FlyEnable) {
             viewHolder.flyButton.setVisibility(View.VISIBLE);
         } else {
             viewHolder.flyButton.setVisibility(View.INVISIBLE);

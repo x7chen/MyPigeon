@@ -46,23 +46,33 @@ public class MyPigeonDAO {
             PigeonInfo pigeon = new PigeonInfo();
             pigeon.Name =cs.getString(cs.getColumnIndex("name"));
             pigeon.ID =cs.getString(cs.getColumnIndex("pigeon_id"));
+            pigeon.BirthDate = cs.getString(cs.getColumnIndex("birth_date"));
             pigeon.ShedID =cs.getString(cs.getColumnIndex("shed_id"));
             pigeon.OwnerID =cs.getString(cs.getColumnIndex("owner_id"));
             pigeon.Status =cs.getString(cs.getColumnIndex("status"));
+            pigeon.FlyTimes = cs.getString(cs.getColumnIndex("fly_times"));
+            pigeon.TotalDistance = cs.getString(cs.getColumnIndex("total_distance"));
+            pigeon.TotalTime = cs.getString(cs.getColumnIndex("total_time"));
             pigeonInfoList.add(pigeon);
         }
         cs.close();
         return pigeonInfoList;
     }
     public void insertPigeon(PigeonInfo pigeonInfo){
-        String sql = "insert into PigeonTable (Name,pigeon_id,shed_id,owner_id)values(?,?,?,?)";
-        db.execSQL(sql, new Object[] { pigeonInfo.Name, pigeonInfo.ID,pigeonInfo.ShedID,pigeonInfo.OwnerID});
+        String sql = "insert into PigeonTable (Name,pigeon_id,birth_date,shed_id,owner_id,status," +
+                "fly_times,total_distance,total_time)values(?,?,?,?,?,?,?,?,?)";
+        db.execSQL(sql, new Object[] { pigeonInfo.Name, pigeonInfo.ID,pigeonInfo.BirthDate,
+                pigeonInfo.ShedID,pigeonInfo.OwnerID,pigeonInfo.Status,pigeonInfo.FlyTimes,
+                pigeonInfo.TotalDistance,pigeonInfo.TotalTime});
     }
 
-    public void updatePigeon(int index,PigeonInfo pigeon){
-        String sql = "update PigeonTable set Name=? pigeon_id=?, shed_id=?, owner_id=?" +
+    public void updatePigeon(int index,PigeonInfo pigeonInfo){
+        String sql = "update PigeonTable set Name=? pigeon_id=?,birth_date=?, shed_id=?, owner_id=?," +
+                "status=?,fly_times=?,total_distance=?,total_time=?" +
                 " where num= "+index;
-        db.execSQL(sql,new Object[]{pigeon.Name,pigeon.ID,pigeon.ShedID,pigeon.OwnerID});
+        db.execSQL(sql,new Object[]{pigeonInfo.Name, pigeonInfo.ID,pigeonInfo.BirthDate,
+                pigeonInfo.ShedID,pigeonInfo.OwnerID,pigeonInfo.Status,pigeonInfo.FlyTimes,
+                pigeonInfo.TotalDistance,pigeonInfo.TotalTime});
     }
     public void deletePigeon(int index){
         String sql = "delete from PigeonTable where num="+index;

@@ -20,16 +20,13 @@ public class MyApplication extends Application {
     public static Context context;
     public static PigeonListActivity pigeonListActivity;
     public static List<PigeonInfo> mPigeonList;
+    public static boolean PigeonListItemClickable = true;
+    public static boolean FlyEnable;
+
     @Override
     public void onCreate() {
         super.onCreate();
         fontMSYH = Typeface.createFromAsset(getAssets(), "fonts/msyh.ttf");
         context = this;
-    }
-    public static void savePigeonListAdapter(PigeonRecyclerAdapter adapter){
-        pigeonRecyclerAdapter = adapter;
-    }
-    public static PigeonRecyclerAdapter getPigeonRecyclerAdapter(){
-        return pigeonRecyclerAdapter;
     }
 }

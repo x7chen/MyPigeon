@@ -18,6 +18,10 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
     TextView PigeonName;
     TextView PigeonID;
     TextView PigeonStatus;
+    TextView FlyTimes;
+    TextView TotalDistance;
+    TextView TotalTime;
+    TextView BirthDate;
     Button editButton;
     Button flyButton;
 
@@ -26,6 +30,10 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         PigeonName = (TextView) parent.findViewById(R.id.pigeon_item_name);
         PigeonID = (TextView) parent.findViewById(R.id.pigeon_item_id);
         PigeonStatus = (TextView) parent.findViewById(R.id.pigeon_item_status);
+        FlyTimes = (TextView) parent.findViewById(R.id.pigeon_item_fly_times);
+        TotalTime = (TextView) parent.findViewById(R.id.pigeon_item_total_time);
+        TotalDistance = (TextView) parent.findViewById(R.id.pigeon_item_total_distance);
+        BirthDate= (TextView) parent.findViewById(R.id.pigeon_item_birth_date);
         editButton = (Button) parent.findViewById(R.id.pigeon_item_edit_button);
         flyButton = (Button) parent.findViewById(R.id.pigeon_item_fly_button);
         parent.setOnClickListener(this);
@@ -40,29 +48,24 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         flyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition()-1);
+                PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
                 pigeon.Status = "FLY";
                 PigeonStatus.setText("飞行中");
                 flyButton.setEnabled(false);
-                Log.i(MyApplication.DebugTag, "getPosition():" + getPosition());
-                Log.i(MyApplication.DebugTag, "getAdapterPosition():" + getAdapterPosition());
-                Log.i(MyApplication.DebugTag, "getItemId():" + getItemId());
-                Log.i(MyApplication.DebugTag, "getLayoutPosition():" + getLayoutPosition());
-                Log.i(MyApplication.DebugTag, "getOldPosition():" + getOldPosition());
             }
         });
-
-
     }
 
 
     @Override
     public void onClick(View v) {
-        final PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition()-1);
-        if (pigeon == null) return;
-        Intent intent = new Intent(MyApplication.pigeonListActivity, RecordActivity.class);
-        intent.putExtra("Name", pigeon.Name);
-        MyApplication.pigeonListActivity.startActivity(intent);
+        if (MyApplication.PigeonListItemClickable) {
+            final PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
+            if (pigeon == null) return;
+            Intent intent = new Intent(MyApplication.pigeonListActivity, RecordActivity.class);
+            intent.putExtra("Name", pigeon.Name);
+            MyApplication.pigeonListActivity.startActivity(intent);
+        }
     }
 
     @Override

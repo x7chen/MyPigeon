@@ -13,5 +13,4 @@ public class PigeonInfo {
     public String TotalDistance;
     public String TotalTime;
     public String FlyTimes;
-    public String FlyEnable;
 }

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -64,7 +65,12 @@ public class PigeonEditActivity extends AppCompatActivity {
                 PigeonInfo pigeonInfo = new PigeonInfo();
                 pigeonInfo.Name = pigeon_name.getText().toString();
                 pigeonInfo.ID = pigeon_id.getText().toString();
-                pigeonInfo.ShedID = shed_id.getText().toString();
+                if(pigeonInfo.ID.matches("^\\d{10}$")){
+                    pigeonInfo.ShedID = shed_id.getText().toString();
+                }else {
+                    Toast.makeText(this,"ID输入有误,必须为10位数字",Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 pigeonInfo.BirthDate = pigeon_birth_date.getText().toString();
                 MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
                 if (myPigeonDAO != null) {
@@ -74,7 +80,7 @@ public class PigeonEditActivity extends AppCompatActivity {
                     Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
                 } else {
                     MyApplication.mPigeonList.add(pigeonInfo);
-                    MyApplication.getPigeonRecyclerAdapter().notifyDataSetChanged();
+                    MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
                 }
                 finish();
                 break;

@@ -248,7 +248,7 @@ public class LeConnector {
 
                     }
                 }
-                connect(mContext, device);
+//                connect(mContext, device);
                 Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
             }
         });

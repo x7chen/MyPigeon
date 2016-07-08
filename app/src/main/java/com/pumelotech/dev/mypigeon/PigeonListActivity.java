@@ -58,6 +58,7 @@ public class PigeonListActivity extends AppCompatActivity {
         MyApplication.mPigeonList = allPigeon;
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView_pigeon);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        MyApplication.PigeonListItemClickable = true;
         mPigeonRecyclerAdapter= new PigeonRecyclerAdapter(allPigeon);
         MyApplication.pigeonRecyclerAdapter = mPigeonRecyclerAdapter;
         recyclerView.setAdapter(mPigeonRecyclerAdapter);
@@ -100,18 +101,15 @@ public class PigeonListActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_fly) {
             if (item.getTitle().toString().equals("开始放飞")) {
-                for (PigeonInfo pigeon : MyApplication.mPigeonList) {
-                    pigeon.FlyEnable = "Enable";
-                }
-                mPigeonRecyclerAdapter.notifyDataSetChanged();
+                MyApplication.PigeonListItemClickable = false;
+                MyApplication.FlyEnable = true;
                 item.setTitle("结束放飞");
             } else {
-                for (PigeonInfo pigeon : MyApplication.mPigeonList) {
-                    pigeon.FlyEnable = "Disable";
-                }
-                mPigeonRecyclerAdapter.notifyDataSetChanged();
+                MyApplication.PigeonListItemClickable = true;
+                MyApplication.FlyEnable = false;
                 item.setTitle("开始放飞");
             }
+            mPigeonRecyclerAdapter.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
     }

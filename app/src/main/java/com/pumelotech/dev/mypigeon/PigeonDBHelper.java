@@ -11,7 +11,8 @@ public class PigeonDBHelper extends SQLiteOpenHelper {
 
 
     String createPigeonTable = "Create Table IF NOT EXISTS PigeonTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
-            "NOT NULL, pigeon_id VARCHAR,name VARCHAR,shed_id VARCHAR,owner_id VARCHAR,status VARCHAR)";
+            "NOT NULL, pigeon_id VARCHAR,name VARCHAR,birth_date VARCHAR,shed_id VARCHAR,owner_id VARCHAR," +
+            "fly_times VARCHAR,total_distance VARCHAR,total_time VARCHAR,status VARCHAR)";
     String createShedTable = "Create Table IF NOT EXISTS ShedTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
             "NOT NULL, shed_id VARCHAR,Name VARCHAR,address VARCHAR)";
     String createUserTable = "Create Table IF NOT EXISTS UserTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
