@@ -1,13 +1,18 @@
 package com.pumelotech.dev.mypigeon;
 
+import android.app.*;
+import android.app.DatePickerDialog;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,7 +23,10 @@ import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
 public class PigeonEditActivity extends AppCompatActivity {
 
-
+    EditText pigeon_name;
+    EditText pigeon_id;
+    EditText pigeon_birth_date;
+    EditText shed_id;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -40,11 +48,30 @@ public class PigeonEditActivity extends AppCompatActivity {
                 finish();
             }
         });
+        pigeon_name = (EditText) findViewById(R.id.pigeon_edit_name);
+        pigeon_id = (EditText) findViewById(R.id.pigeon_edit_id);
+        pigeon_birth_date = (EditText) findViewById(R.id.pigeon_edit_birth_date);
+        shed_id = (EditText) findViewById(R.id.pigeon_edit_shed);
+        pigeon_birth_date.setClickable(true);
+        pigeon_birth_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.app.DatePickerDialog dialog = new DatePickerDialog(PigeonEditActivity.this, onDateSetListener, 2016, 7, 1);
+                dialog.show();
+            }
+        });
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+    DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        pigeon_birth_date.setText(year+"年"+monthOfYear+"月"+dayOfMonth+"日");
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -56,19 +83,16 @@ public class PigeonEditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        final EditText pigeon_name = (EditText) findViewById(R.id.pigeon_edit_name);
-        final EditText pigeon_id = (EditText) findViewById(R.id.pigeon_edit_id);
-        final EditText pigeon_birth_date = (EditText) findViewById(R.id.pigeon_edit_birth_date);
-        final EditText shed_id = (EditText) findViewById(R.id.pigeon_edit_shed);
+
         switch (id) {
             case R.id.menu_done:
                 PigeonInfo pigeonInfo = new PigeonInfo();
                 pigeonInfo.Name = pigeon_name.getText().toString();
                 pigeonInfo.ID = pigeon_id.getText().toString();
-                if(pigeonInfo.ID.matches("^\\d{10}$")){
+                if (pigeonInfo.ID.matches("^\\d{16}$")) {
                     pigeonInfo.ShedID = shed_id.getText().toString();
-                }else {
-                    Toast.makeText(this,"ID输入有误,必须为10位数字",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "ID输入有误,必须为16位数字", Toast.LENGTH_SHORT).show();
                     break;
                 }
                 pigeonInfo.BirthDate = pigeon_birth_date.getText().toString();

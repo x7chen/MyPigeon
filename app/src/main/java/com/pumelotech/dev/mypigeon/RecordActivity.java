@@ -9,6 +9,8 @@ import android.widget.ListView;
 import com.pumelotech.dev.mypigeon.Adapter.RecordListAdapter;
 import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
 
+import java.util.List;
+
 public class RecordActivity extends AppCompatActivity {
 
     @Override
@@ -16,6 +18,7 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
         String name = getIntent().getStringExtra("Name");
+        String ID = getIntent().getStringExtra("ID");
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_record);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
@@ -32,9 +35,10 @@ public class RecordActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView_record);
         final RecordListAdapter mRecordListAdapter= new RecordListAdapter(this);
         listView.setAdapter(mRecordListAdapter);
-        for(int i=0;i<10;i++) {
-            RecordInfo recordInfo = new RecordInfo();
-            mRecordListAdapter.addRecord(recordInfo);
+        MyPigeonDAO  myPigeonDAO= MyPigeonDAO.getInstance();
+        List<RecordInfo> recordInfoList = myPigeonDAO.getPigeonRecord(ID);
+        for(RecordInfo record:recordInfoList) {
+            mRecordListAdapter.addRecord(record);
         }
 
         mRecordListAdapter.notifyDataSetChanged();

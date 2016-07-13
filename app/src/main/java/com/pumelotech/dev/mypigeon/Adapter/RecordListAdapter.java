@@ -23,11 +23,11 @@ public class RecordListAdapter extends BaseAdapter {
     public RecordListAdapter(Context context) {
         super();
         mRecord = new ArrayList<RecordInfo>();
-        mInflator = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void addRecord(RecordInfo recordInfo) {
-        if(!mRecord.contains(recordInfo)) {
+        if (!mRecord.contains(recordInfo)) {
             mRecord.add(recordInfo);
         }
     }
@@ -62,25 +62,56 @@ public class RecordListAdapter extends BaseAdapter {
         if (view == null) {
             view = mInflator.inflate(R.layout.listitem_record, null);
             viewHolder = new ViewHolder();
+            viewHolder.StartDate = (TextView) view.findViewById(R.id.record_item_start_date);
+            viewHolder.StartTime= (TextView) view.findViewById(R.id.record_item_start_time);
+            viewHolder.StartAddress= (TextView) view.findViewById(R.id.record_item_start_address);
+            viewHolder.ArriveDate= (TextView) view.findViewById(R.id.record_item_arrive_date);
+            viewHolder.ArriveTime= (TextView) view.findViewById(R.id.record_item_arrive_time);
+            viewHolder.ArriveAddress= (TextView) view.findViewById(R.id.record_item_arrive_address);
+            viewHolder.Distance= (TextView) view.findViewById(R.id.record_item_distance);
+            viewHolder.ElapsedTime= (TextView) view.findViewById(R.id.record_item_elapsed_time);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
 
         RecordInfo recordInfo = mRecord.get(i);
-//        viewHolder.Year.setText(recordInfo.getYear());
-//        viewHolder.Date.setText(recordInfo.getDate());
-//        viewHolder.Time.setText(recordInfo.getTime());
-//        viewHolder.Count.setText(recordInfo.getCount());
+        if (recordInfo.StartTime != null && recordInfo.StartTime.length() > 10) {
+            viewHolder.StartDate.setText(recordInfo.StartTime.substring(0, 10));
+            viewHolder.StartTime.setText(recordInfo.StartTime.substring(10));
+            viewHolder.StartAddress.setText(recordInfo.StartShedID);
+        } else {
+            viewHolder.StartDate.setText("--");
+            viewHolder.StartTime.setText("--");
+            viewHolder.StartAddress.setText("--");
+
+        }
+        if (recordInfo.ArriveTime != null && recordInfo.ArriveTime.length() > 10) {
+            viewHolder.ArriveDate.setText(recordInfo.ArriveTime.substring(0, 10));
+            viewHolder.ArriveTime.setText(recordInfo.ArriveTime.substring(10));
+            viewHolder.ArriveAddress.setText(recordInfo.ArriveShedID);
+            viewHolder.Distance.setText(recordInfo.Distance);
+            viewHolder.ElapsedTime.setText(recordInfo.ElapsedTime);
+        } else {
+            viewHolder.ArriveDate.setText("--");
+            viewHolder.ArriveTime.setText("--");
+            viewHolder.ArriveAddress.setText("--");
+            viewHolder.Distance.setText("--");
+            viewHolder.ElapsedTime.setText("--");
+        }
+
         return view;
     }
+
     static class ViewHolder {
-        TextView Year;
-        TextView Date;
-        TextView Count;
-        TextView Address;
-        TextView Time;
-        TextView Other;
+        TextView StartDate;
+        TextView StartTime;
+        TextView StartAddress;
+        TextView ArriveDate;
+        TextView ArriveTime;
+        TextView ArriveAddress;
+        TextView Distance;
+        TextView ElapsedTime;
     }
 }
 

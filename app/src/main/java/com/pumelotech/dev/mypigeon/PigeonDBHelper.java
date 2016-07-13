@@ -19,7 +19,7 @@ public class PigeonDBHelper extends SQLiteOpenHelper {
             "NOT NULL,user_id VARCHAR,Name VARCHAR,Sex VARCHAR,BirthDate VARCHAR,PhoneNum VARCHAR,Address VARCHAR)";
     String createRecordTable = "Create Table IF NOT EXISTS RecordTable (num INTEGER PRIMARY KEY AUTOINCREMENT " +
             "NOT NULL,pigeon_id VARCHAR,status INTEGER,start_time VARCHAR,start_shed_id VARCHAR,arrive_time VARCHAR," +
-            "arrive_shed_id VARCHAR,Distance INTEGER,elapsed_time VARCHAR)";
+            "arrive_shed_id VARCHAR,distance INTEGER,elapsed_time VARCHAR)";
 
     public PigeonDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

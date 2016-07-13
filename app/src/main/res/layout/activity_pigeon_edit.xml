@@ -41,7 +41,7 @@
                     android:layout_centerHorizontal="true"
                     android:textColor="@android:color/black"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="20dp" />
                 <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
                     android:id="@+id/pigeon_edit_name_tag"
                     android:layout_width="100dp"
@@ -50,17 +50,18 @@
                     android:textSize="16dp"
                     android:layout_alignParentTop="false"
                     android:layout_alignParentLeft="true"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:layout_below="@+id/pigeon_edit_title"
                     android:gravity="right"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"
+                    android:paddingBottom="10dp" />
 
                 <EditText
                     android:id="@+id/pigeon_edit_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="false"
-                    android:width="120dp"
+                    android:width="150dp"
                     android:singleLine="true"
                     android:layout_toRightOf="@+id/pigeon_edit_name_tag"
                     android:layout_alignBottom="@+id/pigeon_edit_name_tag"
@@ -76,21 +77,23 @@
                     android:textSize="16dp"
                     android:layout_below="@+id/pigeon_edit_name_tag"
                     android:layout_alignParentLeft="true"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:gravity="right"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"
+                    android:paddingBottom="10dp" />
 
                 <EditText
                     android:id="@+id/pigeon_edit_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:width="120dp"
+                    android:width="150dp"
                     android:inputType="number"
                     android:singleLine="true"
                     android:layout_toRightOf="@+id/pigeon_edit_id_tag"
                     android:layout_alignBottom="@+id/pigeon_edit_id_tag"
                     android:layout_marginRight="20dp"
-                    android:textSize="16dp" />
+                    android:textSize="16dp"
+                    android:maxLength="16" />
 
                 <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
                     android:id="@+id/pigeon_edit_birth_date_tag"
@@ -100,15 +103,16 @@
                     android:textSize="16dp"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/pigeon_edit_id_tag"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:gravity="right"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"
+                    android:paddingBottom="10dp" />
 
                 <EditText
                     android:id="@+id/pigeon_edit_birth_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:width="120dp"
+                    android:width="150dp"
                     android:singleLine="true"
                     android:layout_toRightOf="@+id/pigeon_edit_birth_date_tag"
                     android:layout_alignBottom="@+id/pigeon_edit_birth_date_tag"
@@ -123,15 +127,16 @@
                     android:textSize="16dp"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/pigeon_edit_birth_date_tag"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:gravity="right"
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/black"
+                    android:paddingBottom="10dp" />
 
                 <EditText
                     android:id="@+id/pigeon_edit_shed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:width="120dp"
+                    android:width="150dp"
                     android:singleLine="true"
                     android:layout_toRightOf="@+id/pigeon_edit_shed_tag"
                     android:layout_alignBottom="@+id/pigeon_edit_shed_tag"

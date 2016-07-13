@@ -52,16 +52,15 @@
 
                 <TextView
                     android:id="@+id/pigeon_item_id"
-                    android:layout_width="130dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="false"
-                    android:layout_alignParentStart="false"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_toRightOf="@+id/pigeon_item_name"
                     android:singleLine="true"
                     android:text="ID:1234567890"
-                    android:textSize="16dp" />
+                    android:textSize="14dp"
+                    android:layout_alignBottom="@+id/pigeon_item_name" />
 
                 <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
                     android:id="@+id/pigeon_item_status"

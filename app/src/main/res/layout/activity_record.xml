@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:theme="@style/ToolbarTheme"
-    tools:context="com.pumelotech.dev.mypigeon.RecordActivity">
+    tools:context="com.pumelotech.dev.mypigeon.RecordActivity"
+    android:background="@drawable/bk">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_record"
@@ -16,6 +17,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView_record"
         android:divider="#00000000"
-        android:background="@drawable/bk"
         android:layout_marginTop="?attr/actionBarSize" />
 </RelativeLayout>
