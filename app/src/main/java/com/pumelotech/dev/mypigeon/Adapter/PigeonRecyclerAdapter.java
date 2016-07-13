@@ -82,10 +82,10 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         final String pigeonStatus = pigeon.Status;
         if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
             viewHolder.PigeonStatus.setText("飞行中");
-            viewHolder.flyButton.setEnabled(false);
+            //viewHolder.flyButton.setEnabled(false);
         } else {
             viewHolder.PigeonStatus.setText("在棚");
-            viewHolder.flyButton.setEnabled(true);
+            //viewHolder.flyButton.setEnabled(true);
         }
 
         if (MyApplication.FlyEnable) {
