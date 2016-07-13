@@ -30,7 +30,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
     Button editButton;
     Button flyButton;
 
-    public RecyclerItemViewHolder(View parent) {
+    public RecyclerItemViewHolder(final View parent) {
         super(parent);
         PigeonName = (TextView) parent.findViewById(R.id.pigeon_item_name);
         PigeonID = (TextView) parent.findViewById(R.id.pigeon_item_id);
@@ -47,33 +47,61 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, PigeonEditActivity.class));
+                PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
+                Intent intent = new Intent(context, PigeonEditActivity.class);
+                intent.putExtra("Name",pigeon.Name);
+                intent.putExtra("ID",pigeon.ID);
+                intent.putExtra("BirthDate",pigeon.BirthDate);
+                intent.putExtra("ShedID",pigeon.ShedID);
+                context.startActivity(intent);
             }
         });
         flyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
-                pigeon.Status = "FLY";
-                PigeonStatus.setText("飞行中");
-                flyButton.setEnabled(false);
                 MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
-                if (myPigeonDAO != null) {
-                    myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID),pigeon);
-                    RecordInfo record = new RecordInfo();
-                    Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH);
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-                    int second = calendar.get(Calendar.SECOND);
-                    record.PigeonID = pigeon.ID;
-                    record.StartTime = year+"年"+(month+1)+"月"+day+"日"+hour+"时"+minute+"分"+second+"秒";
-                    record.StartShedID = "C000001";
-                    myPigeonDAO.insertRecord(record);
-                }
+                if(pigeon.Status!=null&&pigeon.Status.equals("FLY")){
+                    pigeon.Status = "REST";
+                    PigeonStatus.setText("在棚");
 
+                    if (myPigeonDAO != null) {
+                        int index = myPigeonDAO.getActiveRecordIndex(pigeon.ID);
+                        RecordInfo record = myPigeonDAO.getRecord(index);
+                        Calendar calendar = Calendar.getInstance();
+                        int year = calendar.get(Calendar.YEAR);
+                        int month = calendar.get(Calendar.MONTH);
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+                        record.PigeonID = pigeon.ID;
+                        record.ArriveTime = year + "年" + (month + 1) + "月" + day + "日" + hour + "时" + minute + "分" + second + "秒";
+                        record.ArriveShedID = "C000003";
+                        record.Status = "REST";
+                        myPigeonDAO.updateRecord(index,record);
+                    }
+                }else {
+                    pigeon.Status = "FLY";
+                    PigeonStatus.setText("飞行中");
+//                    flyButton.setEnabled(false);
+                    if (myPigeonDAO != null) {
+                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
+                        RecordInfo record = new RecordInfo();
+                        Calendar calendar = Calendar.getInstance();
+                        int year = calendar.get(Calendar.YEAR);
+                        int month = calendar.get(Calendar.MONTH);
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        int second = calendar.get(Calendar.SECOND);
+                        record.PigeonID = pigeon.ID;
+                        record.StartTime = year + "年" + (month + 1) + "月" + day + "日" + hour + "时" + minute + "分" + second + "秒";
+                        record.StartShedID = "C000001";
+                        record.Status = "FLY";
+                        myPigeonDAO.insertRecord(record);
+                    }
+                }
             }
         });
     }

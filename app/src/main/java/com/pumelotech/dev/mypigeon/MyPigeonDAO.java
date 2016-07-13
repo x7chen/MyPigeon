@@ -186,8 +186,35 @@ public class MyPigeonDAO {
                 record.StartShedID, record.ArriveTime, record.ArriveShedID, record.Distance, record.ElapsedTime});
     }
 
+    public int getActiveRecordIndex(String id) {
+        int num = 0;
+        Cursor cs = db.rawQuery("SELECT * FROM RecordTable WHERE pigeon_id=" + id+" AND status='FLY'", new String[]{});
+        while (cs.moveToNext()) {
+            num = cs.getInt(cs.getColumnIndex("num"));
+        }
+        cs.close();
+        return num;
+    }
+
+    public RecordInfo getRecord(int index) {
+        RecordInfo record = new RecordInfo();
+        Cursor cs = db.rawQuery("SELECT * FROM RecordTable WHERE num=" + index, new String[]{});
+        if (cs.moveToNext()) {
+            record.PigeonID = cs.getString(cs.getColumnIndex("pigeon_id"));
+            record.Status = cs.getString(cs.getColumnIndex("status"));
+            record.StartTime = cs.getString(cs.getColumnIndex("start_time"));
+            record.StartShedID = cs.getString(cs.getColumnIndex("start_shed_id"));
+            record.ArriveTime = cs.getString(cs.getColumnIndex("arrive_time"));
+            record.ArriveShedID = cs.getString(cs.getColumnIndex("arrive_shed_id"));
+            record.Distance = cs.getString(cs.getColumnIndex("distance"));
+            record.ElapsedTime = cs.getString(cs.getColumnIndex("elapsed_time"));
+        }
+        cs.close();
+        return record;
+    }
+
     public void updateRecord(int index, RecordInfo record) {
-        String sql = "update RecordTable set pigeon_id=? status=?,start_time=?,start_shed_id=?," +
+        String sql = "update RecordTable set pigeon_id=?, status=?,start_time=?,start_shed_id=?," +
                 "arrive_time=?,arrive_shed_id=?,distance=?,elapsed_time=?" +
                 " where num= " + index;
         db.execSQL(sql, new Object[]{record.PigeonID, record.Status, record.StartTime,

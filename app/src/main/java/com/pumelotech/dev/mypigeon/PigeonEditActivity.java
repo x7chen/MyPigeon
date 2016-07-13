@@ -2,6 +2,7 @@ package com.pumelotech.dev.mypigeon;
 
 import android.app.*;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ public class PigeonEditActivity extends AppCompatActivity {
     EditText pigeon_id;
     EditText pigeon_birth_date;
     EditText shed_id;
+    Boolean is_modify = false;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -52,6 +54,21 @@ public class PigeonEditActivity extends AppCompatActivity {
         pigeon_id = (EditText) findViewById(R.id.pigeon_edit_id);
         pigeon_birth_date = (EditText) findViewById(R.id.pigeon_edit_birth_date);
         shed_id = (EditText) findViewById(R.id.pigeon_edit_shed);
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("Name");
+        String id = intent.getStringExtra("ID");
+        String birth_date = intent.getStringExtra("BirthDate");
+        String shed = intent.getStringExtra("ShedID");
+        if (id != null) {
+            pigeon_name.setText(name);
+            pigeon_id.setText(id);
+            pigeon_birth_date.setText(birth_date);
+            shed_id.setText(shed);
+            is_modify = true;
+        } else {
+            is_modify = false;
+        }
         pigeon_birth_date.setClickable(true);
         pigeon_birth_date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +86,7 @@ public class PigeonEditActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        pigeon_birth_date.setText(year+"年"+monthOfYear+"月"+dayOfMonth+"日");
+            pigeon_birth_date.setText(year + "年" + monthOfYear + "月" + dayOfMonth + "日");
         }
     };
 
@@ -96,15 +113,33 @@ public class PigeonEditActivity extends AppCompatActivity {
                     break;
                 }
                 pigeonInfo.BirthDate = pigeon_birth_date.getText().toString();
-                MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
-                if (myPigeonDAO != null) {
-                    myPigeonDAO.insertPigeon(pigeonInfo);
-                }
-                if (MyApplication.mPigeonList == null) {
-                    Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
+
+                if (is_modify) {
+                    MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
+                    if (myPigeonDAO != null) {
+                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeonInfo.ID),pigeonInfo);
+                    }
+                    if (MyApplication.mPigeonList == null) {
+                        Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
+                    } else {
+                        for(PigeonInfo pigeon:MyApplication.mPigeonList){
+                            if(pigeon.ID.equals(pigeonInfo.ID)){
+                                MyApplication.mPigeonList.set(MyApplication.mPigeonList.indexOf(pigeon),pigeonInfo);
+                            }
+                        }
+                        MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+                    }
                 } else {
-                    MyApplication.mPigeonList.add(pigeonInfo);
-                    MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+                    MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
+                    if (myPigeonDAO != null) {
+                        myPigeonDAO.insertPigeon(pigeonInfo);
+                    }
+                    if (MyApplication.mPigeonList == null) {
+                        Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
+                    } else {
+                        MyApplication.mPigeonList.add(pigeonInfo);
+                        MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+                    }
                 }
                 finish();
                 break;

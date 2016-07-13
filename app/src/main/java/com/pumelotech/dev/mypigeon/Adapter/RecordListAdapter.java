@@ -96,7 +96,7 @@ public class RecordListAdapter extends BaseAdapter {
             viewHolder.ArriveDate.setText("--");
             viewHolder.ArriveTime.setText("--");
             viewHolder.ArriveAddress.setText("--");
-            viewHolder.Distance.setText("--");
+            viewHolder.Distance.setText("飞行中");
             viewHolder.ElapsedTime.setText("--");
         }
 
