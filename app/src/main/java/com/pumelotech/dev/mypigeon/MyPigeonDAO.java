@@ -54,9 +54,9 @@ public class MyPigeonDAO {
             pigeon.ShedID = cs.getString(cs.getColumnIndex("shed_id"));
             pigeon.OwnerID = cs.getString(cs.getColumnIndex("owner_id"));
             pigeon.Status = cs.getString(cs.getColumnIndex("status"));
-            pigeon.FlyTimes = cs.getString(cs.getColumnIndex("fly_times"));
-            pigeon.TotalDistance = cs.getString(cs.getColumnIndex("total_distance"));
-            pigeon.TotalTime = cs.getString(cs.getColumnIndex("total_time"));
+            pigeon.FlyTimes = cs.getInt(cs.getColumnIndex("fly_times"));
+            pigeon.TotalDistance = cs.getInt(cs.getColumnIndex("total_distance"));
+            pigeon.TotalMinutes = cs.getInt(cs.getColumnIndex("total_minutes"));
             pigeonInfoList.add(pigeon);
         }
         cs.close();
@@ -75,19 +75,19 @@ public class MyPigeonDAO {
 
     public void insertPigeon(PigeonInfo pigeonInfo) {
         String sql = "insert into PigeonTable (Name,pigeon_id,birth_date,shed_id,owner_id,status," +
-                "fly_times,total_distance,total_time)values(?,?,?,?,?,?,?,?,?)";
+                "fly_times,total_distance,total_minutes)values(?,?,?,?,?,?,?,?,?)";
         db.execSQL(sql, new Object[]{pigeonInfo.Name, pigeonInfo.ID, pigeonInfo.BirthDate,
                 pigeonInfo.ShedID, pigeonInfo.OwnerID, pigeonInfo.Status, pigeonInfo.FlyTimes,
-                pigeonInfo.TotalDistance, pigeonInfo.TotalTime});
+                pigeonInfo.TotalDistance, pigeonInfo.TotalMinutes});
     }
 
     public void updatePigeon(int index, PigeonInfo pigeonInfo) {
         String sql = "update PigeonTable set Name=?, pigeon_id=?,birth_date=?, shed_id=?, owner_id=?," +
-                "status=?,fly_times=?,total_distance=?,total_time=?" +
+                "status=?,fly_times=?,total_distance=?,total_minutes=?" +
                 " where num= " + index;
         db.execSQL(sql, new Object[]{pigeonInfo.Name, pigeonInfo.ID, pigeonInfo.BirthDate,
                 pigeonInfo.ShedID, pigeonInfo.OwnerID, pigeonInfo.Status, pigeonInfo.FlyTimes,
-                pigeonInfo.TotalDistance, pigeonInfo.TotalTime});
+                pigeonInfo.TotalDistance, pigeonInfo.TotalMinutes});
     }
 
     public void deletePigeon(int index) {
@@ -161,7 +161,7 @@ public class MyPigeonDAO {
 
     public List<RecordInfo> getPigeonRecord(String pigeon_id) {
         List<RecordInfo> recordInfoList = new ArrayList<>();
-        Cursor cs = db.rawQuery("SELECT * FROM RecordTable where pigeon_id=?", new String[]{pigeon_id});
+        Cursor cs = db.rawQuery("SELECT * FROM RecordTable where pigeon_id=? order by num desc ", new String[]{pigeon_id});
         while (cs.moveToNext()) {
             RecordInfo record = new RecordInfo();
             record.PigeonID = cs.getString(cs.getColumnIndex("pigeon_id"));
@@ -170,8 +170,8 @@ public class MyPigeonDAO {
             record.StartShedID = cs.getString(cs.getColumnIndex("start_shed_id"));
             record.ArriveTime = cs.getString(cs.getColumnIndex("arrive_time"));
             record.ArriveShedID = cs.getString(cs.getColumnIndex("arrive_shed_id"));
-            record.Distance = cs.getString(cs.getColumnIndex("distance"));
-            record.ElapsedTime = cs.getString(cs.getColumnIndex("elapsed_time"));
+            record.DistanceMeter = cs.getInt(cs.getColumnIndex("distance_meter"));
+            record.ElapsedMinutes = cs.getInt(cs.getColumnIndex("elapsed_minutes"));
 
             recordInfoList.add(record);
         }
@@ -181,14 +181,14 @@ public class MyPigeonDAO {
 
     public void insertRecord(RecordInfo record) {
         String sql = "insert into RecordTable (pigeon_id,status,start_time,start_shed_id," +
-                "arrive_time,arrive_shed_id,distance,elapsed_time)values(?,?,?,?,?,?,?,?)";
+                "arrive_time,arrive_shed_id,distance_meter,elapsed_minutes)values(?,?,?,?,?,?,?,?)";
         db.execSQL(sql, new Object[]{record.PigeonID, record.Status, record.StartTime,
-                record.StartShedID, record.ArriveTime, record.ArriveShedID, record.Distance, record.ElapsedTime});
+                record.StartShedID, record.ArriveTime, record.ArriveShedID, record.DistanceMeter, record.ElapsedMinutes});
     }
 
     public int getActiveRecordIndex(String id) {
         int num = 0;
-        Cursor cs = db.rawQuery("SELECT * FROM RecordTable WHERE pigeon_id=" + id+" AND status='FLY'", new String[]{});
+        Cursor cs = db.rawQuery("SELECT * FROM RecordTable WHERE pigeon_id=" + id + " AND status='FLY'", new String[]{});
         while (cs.moveToNext()) {
             num = cs.getInt(cs.getColumnIndex("num"));
         }
@@ -206,8 +206,8 @@ public class MyPigeonDAO {
             record.StartShedID = cs.getString(cs.getColumnIndex("start_shed_id"));
             record.ArriveTime = cs.getString(cs.getColumnIndex("arrive_time"));
             record.ArriveShedID = cs.getString(cs.getColumnIndex("arrive_shed_id"));
-            record.Distance = cs.getString(cs.getColumnIndex("distance"));
-            record.ElapsedTime = cs.getString(cs.getColumnIndex("elapsed_time"));
+            record.DistanceMeter = cs.getInt(cs.getColumnIndex("distance_meter"));
+            record.ElapsedMinutes = cs.getInt(cs.getColumnIndex("elapsed_minutes"));
         }
         cs.close();
         return record;
@@ -215,10 +215,10 @@ public class MyPigeonDAO {
 
     public void updateRecord(int index, RecordInfo record) {
         String sql = "update RecordTable set pigeon_id=?, status=?,start_time=?,start_shed_id=?," +
-                "arrive_time=?,arrive_shed_id=?,distance=?,elapsed_time=?" +
+                "arrive_time=?,arrive_shed_id=?,distance_meter=?,elapsed_minutes=?" +
                 " where num= " + index;
         db.execSQL(sql, new Object[]{record.PigeonID, record.Status, record.StartTime,
-                record.StartShedID, record.ArriveTime, record.ArriveShedID, record.Distance, record.ElapsedTime});
+                record.StartShedID, record.ArriveTime, record.ArriveShedID, record.DistanceMeter, record.ElapsedMinutes});
     }
 
     public void deleteRecord(int index) {

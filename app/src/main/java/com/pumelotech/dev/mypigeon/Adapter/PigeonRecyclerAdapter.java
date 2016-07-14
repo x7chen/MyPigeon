@@ -2,7 +2,6 @@ package com.pumelotech.dev.mypigeon.Adapter;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 import com.pumelotech.dev.mypigeon.MyApplication;
-import com.pumelotech.dev.mypigeon.PigeonEditActivity;
 import com.pumelotech.dev.mypigeon.R;
 
 import java.util.ArrayList;
@@ -25,6 +23,7 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private Context mContext;
     private static final int TYPE_HEADER = 2;
     private static final int TYPE_ITEM = 1;
+
     public PigeonRecyclerAdapter(List<PigeonInfo> list) {
         super();
         mPigeonList = (ArrayList<PigeonInfo>) list;
@@ -49,38 +48,22 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         RecyclerItemViewHolder viewHolder;
         if (!isPositionHeader(position)) {
             viewHolder = (RecyclerItemViewHolder) holder;
-        }
-        else {
+        } else {
             return;
         }
-        if(holder==null){
+        if (holder == null) {
             return;
         }
-        final PigeonInfo pigeon = mPigeonList.get(position-1);
+        final PigeonInfo pigeon = mPigeonList.get(position - 1);
         final String pigeonName = pigeon.Name;
-        if (pigeonName != null && pigeonName.length() > 0)
-            viewHolder.PigeonName.setText(pigeonName);
-        else
-            viewHolder.PigeonName.setText(R.string.no_name);
+        viewHolder.PigeonName.setText(pigeonName);
         viewHolder.PigeonID.setText("ID:" + pigeon.ID);
-        if(pigeon.FlyTimes==null){
-            viewHolder.FlyTimes.setText("0");
-        }else {
-            viewHolder.FlyTimes.setText(pigeon.FlyTimes);
-        }
-        if(pigeon.TotalTime==null) {
-            viewHolder.TotalTime.setText("0时0分");
-        }else {
-            viewHolder.TotalTime.setText(pigeon.TotalTime);
-        }
-        if(pigeon.TotalDistance==null){
-            viewHolder.TotalDistance.setText("0Km");
-        }else {
-            viewHolder.TotalDistance.setText(pigeon.TotalDistance);
-        }
-        viewHolder.BirthDate.setText( pigeon.BirthDate);
+        viewHolder.FlyTimes.setText(Integer.toString(pigeon.FlyTimes));
+        viewHolder.TotalTime.setText(pigeon.TotalMinutes / 60 + "时" + pigeon.TotalMinutes % 60 + "分");
+        viewHolder.TotalDistance.setText(pigeon.TotalDistance/1000 + "Km");
+        viewHolder.BirthDate.setText(pigeon.BirthDate);
         final String pigeonStatus = pigeon.Status;
-        if (pigeonStatus != null && pigeonStatus.equals("FLY")) {
+        if (pigeonStatus.equals("FLY")) {
             viewHolder.PigeonStatus.setText("飞行中");
             //viewHolder.flyButton.setEnabled(false);
         } else {
@@ -104,11 +87,13 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public int getBasicItemCount() {
         return mPigeonList == null ? 0 : mPigeonList.size();
     }
+
     //our new getItemCount() that includes header View
     @Override
     public int getItemCount() {
         return getBasicItemCount() + 1; // header
     }
+
     //added a method that returns viewType for a given position
     @Override
     public int getItemViewType(int position) {
@@ -117,6 +102,7 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
         return TYPE_ITEM;
     }
+
     //added a method to check if given position is a header
     private boolean isPositionHeader(int position) {
         return position == 0;

@@ -10,7 +10,19 @@ public class PigeonInfo {
     public String OwnerID;
     public String ShedID;
     public String Status;
-    public String TotalDistance;
-    public String TotalTime;
-    public String FlyTimes;
+    public Integer TotalDistance;
+    public Integer TotalMinutes;
+    public Integer FlyTimes;
+
+    public PigeonInfo() {
+        Name = "无名";
+        this.ID = "错误";
+        BirthDate = "未知";
+        OwnerID = "未知";
+        ShedID = "未知";
+        Status = "未知";
+        TotalDistance = 0;
+        TotalMinutes = 0;
+        FlyTimes = 0;
+    }
 }

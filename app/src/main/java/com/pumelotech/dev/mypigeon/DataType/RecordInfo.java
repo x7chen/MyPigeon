@@ -10,6 +10,17 @@ public class RecordInfo {
     public String StartShedID;
     public String ArriveShedID;
     public String Status;
-    public String Distance;
-    public String ElapsedTime;
+    public Integer DistanceMeter;
+    public Integer ElapsedMinutes;
+
+    public RecordInfo() {
+        PigeonID = "--";
+        StartTime = "--";
+        ArriveTime = "--";
+        StartShedID = "--";
+        ArriveShedID = "--";
+        Status = "--";
+        DistanceMeter = 0;
+        ElapsedMinutes = 0;
+    }
 }

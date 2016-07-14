@@ -103,8 +103,14 @@ public class PigeonEditActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.menu_done:
+                String string;
                 PigeonInfo pigeonInfo = new PigeonInfo();
-                pigeonInfo.Name = pigeon_name.getText().toString();
+                string = pigeon_name.getText().toString();
+                if (string.equals("")) {
+
+                } else {
+                    pigeonInfo.Name = string;
+                }
                 pigeonInfo.ID = pigeon_id.getText().toString();
                 if (pigeonInfo.ID.matches("^\\d{16}$")) {
                     pigeonInfo.ShedID = shed_id.getText().toString();
@@ -112,19 +118,24 @@ public class PigeonEditActivity extends AppCompatActivity {
                     Toast.makeText(this, "ID输入有误,必须为16位数字", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                pigeonInfo.BirthDate = pigeon_birth_date.getText().toString();
+                string = pigeon_birth_date.getText().toString();
+                if (string.equals("")) {
+
+                } else {
+                    pigeonInfo.BirthDate = string;
+                }
 
                 if (is_modify) {
                     MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
                     if (myPigeonDAO != null) {
-                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeonInfo.ID),pigeonInfo);
+                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeonInfo.ID), pigeonInfo);
                     }
                     if (MyApplication.mPigeonList == null) {
                         Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
                     } else {
-                        for(PigeonInfo pigeon:MyApplication.mPigeonList){
-                            if(pigeon.ID.equals(pigeonInfo.ID)){
-                                MyApplication.mPigeonList.set(MyApplication.mPigeonList.indexOf(pigeon),pigeonInfo);
+                        for (PigeonInfo pigeon : MyApplication.mPigeonList) {
+                            if (pigeon.ID.equals(pigeonInfo.ID)) {
+                                MyApplication.mPigeonList.set(MyApplication.mPigeonList.indexOf(pigeon), pigeonInfo);
                             }
                         }
                         MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();

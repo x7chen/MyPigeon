@@ -90,8 +90,8 @@ public class RecordListAdapter extends BaseAdapter {
             viewHolder.ArriveDate.setText(recordInfo.ArriveTime.substring(0, 10));
             viewHolder.ArriveTime.setText(recordInfo.ArriveTime.substring(10));
             viewHolder.ArriveAddress.setText(recordInfo.ArriveShedID);
-            viewHolder.Distance.setText(recordInfo.Distance);
-            viewHolder.ElapsedTime.setText(recordInfo.ElapsedTime);
+            viewHolder.Distance.setText(recordInfo.DistanceMeter/1000+"Km");
+            viewHolder.ElapsedTime.setText(recordInfo.ElapsedMinutes/60+"时"+recordInfo.ElapsedMinutes%60+"分");
         } else {
             viewHolder.ArriveDate.setText("--");
             viewHolder.ArriveTime.setText("--");

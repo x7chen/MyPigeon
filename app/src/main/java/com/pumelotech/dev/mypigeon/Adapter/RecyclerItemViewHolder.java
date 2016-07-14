@@ -15,9 +15,10 @@ import com.pumelotech.dev.mypigeon.R;
 import com.pumelotech.dev.mypigeon.RecordActivity;
 import com.pumelotech.dev.mypigeon.MyPigeonDAO;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
     TextView PigeonName;
@@ -38,7 +39,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
         FlyTimes = (TextView) parent.findViewById(R.id.pigeon_item_fly_times);
         TotalTime = (TextView) parent.findViewById(R.id.pigeon_item_total_time);
         TotalDistance = (TextView) parent.findViewById(R.id.pigeon_item_total_distance);
-        BirthDate= (TextView) parent.findViewById(R.id.pigeon_item_birth_date);
+        BirthDate = (TextView) parent.findViewById(R.id.pigeon_item_birth_date);
         editButton = (Button) parent.findViewById(R.id.pigeon_item_edit_button);
         flyButton = (Button) parent.findViewById(R.id.pigeon_item_fly_button);
         parent.setOnClickListener(this);
@@ -49,10 +50,10 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             public void onClick(View v) {
                 PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
                 Intent intent = new Intent(context, PigeonEditActivity.class);
-                intent.putExtra("Name",pigeon.Name);
-                intent.putExtra("ID",pigeon.ID);
-                intent.putExtra("BirthDate",pigeon.BirthDate);
-                intent.putExtra("ShedID",pigeon.ShedID);
+                intent.putExtra("Name", pigeon.Name);
+                intent.putExtra("ID", pigeon.ID);
+                intent.putExtra("BirthDate", pigeon.BirthDate);
+                intent.putExtra("ShedID", pigeon.ShedID);
                 context.startActivity(intent);
             }
         });
@@ -61,42 +62,43 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             public void onClick(View v) {
                 PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
                 MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
-                if(pigeon.Status!=null&&pigeon.Status.equals("FLY")){
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+                if (pigeon.Status != null && pigeon.Status.equals("FLY")) {
                     pigeon.Status = "REST";
                     PigeonStatus.setText("在棚");
 
                     if (myPigeonDAO != null) {
                         int index = myPigeonDAO.getActiveRecordIndex(pigeon.ID);
                         RecordInfo record = myPigeonDAO.getRecord(index);
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH);
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
+                        Date start_time = new Date();
+                        Date arrive_time = new Date();
                         record.PigeonID = pigeon.ID;
-                        record.ArriveTime = year + "年" + (month + 1) + "月" + day + "日" + hour + "时" + minute + "分" + second + "秒";
+                        record.ArriveTime = format.format(arrive_time);
+                        try {
+                            start_time = format.parse(record.StartTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        long between_minutes = (arrive_time.getTime() - start_time.getTime())/60000;
+                        record.ElapsedMinutes = (int)between_minutes;
+                        record.DistanceMeter = 100*1000;
                         record.ArriveShedID = "C000003";
                         record.Status = "REST";
-                        myPigeonDAO.updateRecord(index,record);
+                        pigeon.FlyTimes = pigeon.FlyTimes + 1;
+                        pigeon.TotalDistance = pigeon.TotalDistance+record.DistanceMeter;
+                        pigeon.TotalMinutes = pigeon.TotalMinutes+record.ElapsedMinutes;
+                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID),pigeon);
+                        myPigeonDAO.updateRecord(index, record);
                     }
-                }else {
+                } else {
                     pigeon.Status = "FLY";
                     PigeonStatus.setText("飞行中");
 //                    flyButton.setEnabled(false);
                     if (myPigeonDAO != null) {
                         myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
                         RecordInfo record = new RecordInfo();
-                        Calendar calendar = Calendar.getInstance();
-                        int year = calendar.get(Calendar.YEAR);
-                        int month = calendar.get(Calendar.MONTH);
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        int second = calendar.get(Calendar.SECOND);
                         record.PigeonID = pigeon.ID;
-                        record.StartTime = year + "年" + (month + 1) + "月" + day + "日" + hour + "时" + minute + "分" + second + "秒";
+                        record.StartTime = format.format(new Date());
                         record.StartShedID = "C000001";
                         record.Status = "FLY";
                         myPigeonDAO.insertRecord(record);
@@ -114,7 +116,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             if (pigeon == null) return;
             Intent intent = new Intent(MyApplication.pigeonListActivity, RecordActivity.class);
             intent.putExtra("Name", pigeon.Name);
-            intent.putExtra("ID",pigeon.ID);
+            intent.putExtra("ID", pigeon.ID);
             MyApplication.pigeonListActivity.startActivity(intent);
         }
     }
