@@ -21,7 +21,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -33,7 +32,6 @@ import com.pumelotech.dev.mypigeon.MainActivity;
 import com.pumelotech.dev.mypigeon.R;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -41,27 +39,24 @@ import java.util.UUID;
  */
 public class LeConnector {
     public static final String TAG = MainActivity.DebugTag;
+
+    static private Context mContext;
+    static private LeConnector mLeConnector;
+    private BluetoothAdapter mBluetoothAdapter;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothDevice mDevice;
-    private int mConnectionState = STATE_DISCONNECTED;
+    private LeConnectorCallback mCallbacks;
+    private List<BluetoothGattService> mServices;
 
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
-
-    public static final UUID LE_UART_SERVICE_UUID = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
-    public static final UUID LE_UART_CHAR_UUID = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
+    private int mConnectionState = STATE_DISCONNECTED;
 
     public final static String ERROR_DISCOVERY_SERVICE = "Error on discovering services";
     public final static String ERROR_WRITE_CHARACTERISTIC = "Error on writing characteristic";
     public final static String ERROR_WRITE_DESCRIPTOR = "Error on writing descriptor";
 
-    private BluetoothAdapter mBluetoothAdapter;
-    private LeConnectorCallBacks mCallbacks;
-    private boolean isNUSServiceFound = false;
-    static private LeConnector mLeConnector;
-    static private Context mContext;
-    private BluetoothGattCharacteristic leUartCharacteristic;
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
@@ -70,7 +65,7 @@ public class LeConnector {
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 mConnectionState = STATE_CONNECTED;
-                mCallbacks.onDeviceConnected();
+                mCallbacks.onConnectionStateChange(newState);
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
                 Log.i(TAG, "Attempting to start service discovery:" +
@@ -78,29 +73,14 @@ public class LeConnector {
 
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 mConnectionState = STATE_DISCONNECTED;
-                mCallbacks.onDeviceDisconnected();
+                mCallbacks.onConnectionStateChange(newState);
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            isNUSServiceFound = false;
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                List<BluetoothGattService> services = gatt.getServices();
-                for (BluetoothGattService service : services) {
-                    if (service.getUuid().equals(LE_UART_SERVICE_UUID)) {
-                        isNUSServiceFound = true;
-                        leUartCharacteristic = service.getCharacteristic(LE_UART_CHAR_UUID);
-                        enableNotification();
-                        mCallbacks.onInitialized();
-                    }
-                }
-                if (isNUSServiceFound) {
-                    mCallbacks.onServiceFound();
-                } else {
-                    mCallbacks.onDeviceNotSupported();
-                    //gatt.disconnect();
-                }
+                mServices = gatt.getServices();
             } else {
                 mCallbacks.onError(ERROR_DISCOVERY_SERVICE, status);
             }
@@ -128,12 +108,45 @@ public class LeConnector {
         }
     };
 
+    public BluetoothGatt getBluetoothGatt() {
+        return mBluetoothGatt;
+    }
+
+    public List<BluetoothGattService> getServices() {
+        return mServices;
+    }
+
+    public int getmConnectionState() {
+        return mConnectionState;
+    }
 
     public BluetoothDevice getDevice() {
         return mDevice;
     }
 
-    public void connect(Context context, BluetoothDevice device) {
+    public void autoConnect(String name, LeConnectorCallback callBacks) {
+        mCallbacks = callBacks;
+        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                String deviceName = device.getName();
+                if (deviceName == null) {
+                    deviceName = LeAdvertiseParser.parseAdertisedData(scanRecord).getName();
+                }
+                if (deviceName != null) {
+                    if (device.getName().equals("BT05")) {
+                        //if (device.getName().equals("GLAREME")) {
+                        connect(mContext, device);
+                        mConnectionState = STATE_CONNECTING;
+                    }
+                }
+                Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
+            }
+        });
+        Log.d(MainActivity.DebugTag, "Start Scan");
+    }
+
+    private void connect(Context context, BluetoothDevice device) {
         if (device == null) {
             return;
         }
@@ -158,28 +171,6 @@ public class LeConnector {
         }
         mBluetoothGatt.close();
         mBluetoothGatt = null;
-    }
-
-    public void send(byte[] data) {
-        if (leUartCharacteristic == null) {
-            mCallbacks.onError(ERROR_WRITE_CHARACTERISTIC, 0);
-            return;
-        }
-        leUartCharacteristic.setValue(data);
-        mBluetoothGatt.writeCharacteristic(leUartCharacteristic);
-    }
-
-    public void enableNotification() {
-        if (mBluetoothGatt == null) {
-            return;
-        }
-        mBluetoothGatt.setCharacteristicNotification(leUartCharacteristic, true);
-
-        List<BluetoothGattDescriptor> descriptors = leUartCharacteristic.getDescriptors();
-        for (BluetoothGattDescriptor dp : descriptors) {
-            dp.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-            mBluetoothGatt.writeDescriptor(dp);
-        }
     }
 
     public static LeConnector getInstance(Context context) {
@@ -212,45 +203,5 @@ public class LeConnector {
             Toast.makeText(mContext, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             return;
         }
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                String deviceName = device.getName();
-                if (deviceName == null) {
-                    deviceName = LeAdvertiseParser.parseAdertisedData(scanRecord).getName();
-                }
-                if (deviceName != null) {
-                    //if (device.getName().equals("BT05")) {
-                    if (device.getName().equals("GLAREME")) {
-                        connect(mContext, device);
-
-                    }
-                }
-                Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
-            }
-        });
-        Log.d(MainActivity.DebugTag, "Start Scan");
-    }
-
-    public void registerCallbacks(LeConnectorCallBacks callBacks) {
-        mCallbacks = callBacks;
-    }
-
-    public interface LeConnectorCallBacks {
-        void onDeviceConnected();
-
-        void onDeviceDisconnected();
-
-        void onServiceFound();
-
-        void onReceived(byte[] data);
-
-        void onInitialized();
-
-        void onSending();
-
-        void onError(String message, int errorCode);
-
-        void onDeviceNotSupported();
     }
 }
