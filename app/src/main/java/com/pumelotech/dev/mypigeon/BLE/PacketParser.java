@@ -1,8 +1,5 @@
 package com.pumelotech.dev.mypigeon.BLE;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
@@ -22,27 +19,18 @@ import java.util.Calendar;
  */
 public class PacketParser {
 
-    private int mVERSION = 110;
-
     private final static String TAG = "PacketParserService";
 
     public final static String ACTION_PACKET_HANDLE =
             "com.pumelotech.dev.mypigeon.packet.parser.ACTION_PACKET_HANDLE";
-    public final static String ACTION_PROGRESSBAR =
-            "com.pumelotech.dev.mypigeon.parser.ACTION_PROGRESSBAR";
-    private BluetoothManager mBluetoothManager;
-    private BluetoothAdapter mBluetoothAdapter;
     boolean BLE_CONNECT_STATUS = false;
     private int resent_cnt = 0;
     private LeConnector leConnector;
     private CallBack mPacketCallBack;
-    private BluetoothDevice mDevice;
 
     private TimerThread sendTimerThread;
     private TimerThread receiveTimerThread;
     public static final byte RECEIVED_PIGEON_RECORD = 1;
-    public static final byte RECEIVED_SPORT_DATA = 2;
-    public static final byte RECEIVED_DAILY_DATA = 3;
 
     private Packet send_packet = new Packet();
     private Packet receive_packet = new Packet();
@@ -127,28 +115,6 @@ public class PacketParser {
         } else {
             return false;
         }
-    }
-
-    public interface CallBack {
-        void onSendSuccess();
-
-        void onSendFailure();
-
-        void onTimeOut();
-
-        void onConnectStatusChanged(boolean status);
-
-        void onDataReceived(byte category);
-
-        void onCharacteristicNotFound();
-    }
-
-    public void registerCallback(CallBack callBack) {
-        mPacketCallBack = callBack;
-    }
-
-    public int getVersion() {
-        return mVERSION;
     }
 
 
@@ -338,7 +304,7 @@ public class PacketParser {
         aData = (aData << 8) | (data[1] & 0xFFL);
         aData = (aData << 8) | (data[2] & 0xFFL);
         aData = (aData << 8) | (data[3] & 0xFFL);
-        pigeonRecord.ID = (int)aData;
+        pigeonRecord.ID = (int) aData;
 
         aData = data[4] & 0xFFL;
         aData = (aData << 8) | (data[5] & 0xFFL);
@@ -454,6 +420,9 @@ public class PacketParser {
         public void onDeviceConnected() {
             receive_packet.clear();
             send_packet.clear();
+            if (mPacketCallBack != null) {
+                mPacketCallBack.onConnectStatusChanged(true);
+            }
         }
 
         @Override
@@ -558,4 +527,22 @@ public class PacketParser {
             mPacketCallBack.onCharacteristicNotFound();
         }
     };
+
+    public interface CallBack {
+        void onSendSuccess();
+
+        void onSendFailure();
+
+        void onTimeOut();
+
+        void onConnectStatusChanged(boolean status);
+
+        void onDataReceived(byte category);
+
+        void onCharacteristicNotFound();
+    }
+
+    public void registerCallback(CallBack callBack) {
+        mPacketCallBack = callBack;
+    }
 }

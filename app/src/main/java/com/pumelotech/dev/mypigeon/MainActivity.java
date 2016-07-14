@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.pumelotech.dev.mypigeon.BLE.PacketParser;
 
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     public static String DebugTag = MyApplication.DebugTag;
     private PacketParser mPacketParser;
     MyApplication myApplication;
+    ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +34,51 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, PigeonListActivity.class));
             }
         });
-
+        imageButton = (ImageButton) findViewById(R.id.bluetooth_state);
+        imageButton.setEnabled(false);
         mPacketParser = PacketParser.getInstance(this);
+        mPacketParser.registerCallback(callBack);
         MyPigeonDAO.getInstance(this);
     }
 
+    PacketParser.CallBack callBack = new PacketParser.CallBack() {
+        @Override
+        public void onSendSuccess() {
+
+        }
+
+        @Override
+        public void onSendFailure() {
+
+        }
+
+        @Override
+        public void onTimeOut() {
+
+        }
+
+        @Override
+        public void onConnectStatusChanged(boolean status) {
+            final boolean s = status;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    imageButton.setEnabled(s);
+                }
+            });
+
+        }
+
+        @Override
+        public void onDataReceived(byte category) {
+
+        }
+
+        @Override
+        public void onCharacteristicNotFound() {
+
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -66,7 +66,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
                 if (pigeon.Status != null && pigeon.Status.equals("FLY")) {
                     pigeon.Status = "REST";
                     PigeonStatus.setText("在棚");
-
+                    flyButton.setText("放飞");
                     if (myPigeonDAO != null) {
                         int index = myPigeonDAO.getActiveRecordIndex(pigeon.ID);
                         RecordInfo record = myPigeonDAO.getRecord(index);
@@ -94,6 +94,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
                     pigeon.Status = "FLY";
                     PigeonStatus.setText("飞行中");
 //                    flyButton.setEnabled(false);
+                    flyButton.setText("到达");
                     if (myPigeonDAO != null) {
                         myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
                         RecordInfo record = new RecordInfo();

@@ -113,7 +113,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/record_item_arrive_address_tag"
                 android:text="深圳西乡2号鸽棚"
-                android:textSize="14dp" />
+                android:textSize="14dp"
+                android:textAlignment="textEnd" />
 
             <com.pumelotech.dev.mypigeon.UserView.TextViewMSYH
                 android:id="@+id/record_item_distance_tag"

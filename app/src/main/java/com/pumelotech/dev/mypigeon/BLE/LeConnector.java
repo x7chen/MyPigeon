@@ -51,7 +51,6 @@ public class LeConnector {
 
     public static final UUID LE_UART_SERVICE_UUID = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
     public static final UUID LE_UART_CHAR_UUID = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
-    public static final String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
 
     public final static String ERROR_DISCOVERY_SERVICE = "Error on discovering services";
     public final static String ERROR_WRITE_CHARACTERISTIC = "Error on writing characteristic";
@@ -100,7 +99,7 @@ public class LeConnector {
                     mCallbacks.onServiceFound();
                 } else {
                     mCallbacks.onDeviceNotSupported();
-                    gatt.disconnect();
+                    //gatt.disconnect();
                 }
             } else {
                 mCallbacks.onError(ERROR_DISCOVERY_SERVICE, status);
@@ -129,28 +128,6 @@ public class LeConnector {
         }
     };
 
-    public void registerCallbacks(LeConnectorCallBacks callBacks) {
-        mCallbacks = callBacks;
-    }
-
-
-    public interface LeConnectorCallBacks {
-        void onDeviceConnected();
-
-        void onDeviceDisconnected();
-
-        void onServiceFound();
-
-        void onReceived(byte[] data);
-
-        void onInitialized();
-
-        void onSending();
-
-        void onError(String message, int errorCode);
-
-        void onDeviceNotSupported();
-    }
 
     public BluetoothDevice getDevice() {
         return mDevice;
@@ -243,15 +220,37 @@ public class LeConnector {
                     deviceName = LeAdvertiseParser.parseAdertisedData(scanRecord).getName();
                 }
                 if (deviceName != null) {
-                    if (device.getName().equals("BT05")) {
+                    //if (device.getName().equals("BT05")) {
+                    if (device.getName().equals("GLAREME")) {
                         connect(mContext, device);
 
                     }
                 }
-//                connect(mContext, device);
                 Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
             }
         });
         Log.d(MainActivity.DebugTag, "Start Scan");
+    }
+
+    public void registerCallbacks(LeConnectorCallBacks callBacks) {
+        mCallbacks = callBacks;
+    }
+
+    public interface LeConnectorCallBacks {
+        void onDeviceConnected();
+
+        void onDeviceDisconnected();
+
+        void onServiceFound();
+
+        void onReceived(byte[] data);
+
+        void onInitialized();
+
+        void onSending();
+
+        void onError(String message, int errorCode);
+
+        void onDeviceNotSupported();
     }
 }
