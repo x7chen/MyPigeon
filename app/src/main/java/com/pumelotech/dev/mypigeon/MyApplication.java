@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 import com.pumelotech.dev.mypigeon.Adapter.PigeonRecyclerAdapter;
+import com.pumelotech.dev.mypigeon.BLE.LeConnector;
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class MyApplication extends Application {
     public static List<PigeonInfo> mPigeonList;
     public static boolean PigeonListItemClickable = true;
     public static boolean FlyEnable;
-
+    public static LeConnector mLeConnector;
     @Override
     public void onCreate() {
         super.onCreate();

@@ -112,7 +112,7 @@ public class Packet {
     public int checkPacket() {
         int mPacketError = 0;
         //判断包总长度，如果超过512，为无效包
-        if (mPacket.size() > 512) {
+        if (mPacket.size() > 100) {
             mPacket.clear();
         }
         //获取L1Header
@@ -128,7 +128,7 @@ public class Packet {
             return mPacketError;
         }
         //判断此包是否为ACK包，并将状态码返回给接收器
-        if (aL1Header.getAckError() != 0x00) {
+        if ((aL1Header.getAckError()&0xF0) != 0x00) {
             mPacketError = aL1Header.getAckError();
             return mPacketError;
         }

@@ -3,26 +3,27 @@ package com.pumelotech.dev.mypigeon.BLE;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
+import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
+import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
+import com.pumelotech.dev.mypigeon.MyApplication;
+import com.pumelotech.dev.mypigeon.MyPigeonDAO;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Administrator on 2015/10/16.
  */
-public class PacketParser implements L1ControllerCallback{
+public class PacketParser implements L1ControllerCallback {
 
-    private final static String TAG = "PacketParserService";
-
-
+    private final static String TAG = MyApplication.DebugTag;
     public final static String ACTION_PACKET_HANDLE =
             "com.pumelotech.dev.mypigeon.packet.parser.ACTION_PACKET_HANDLE";
-    boolean BLE_CONNECT_STATUS = false;
-
-    private LeConnector leConnector;
-    private CallBack mPacketCallBack;
-
-
-    public static final byte RECEIVED_PIGEON_RECORD = 1;
 
 
     public static final int NO_TRANSFER = 0;
@@ -32,28 +33,28 @@ public class PacketParser implements L1ControllerCallback{
     private boolean isDeviceConnected = false;
     static private Context mContext;
     static private PacketParser mPacketParser;
+    L1Controller mL1Controller;
 
     static public PacketParser getInstance(Context context) {
         if (mContext == null) {
             mContext = context;
         }
-        return getInstance();
-    }
-
-    static public PacketParser getInstance() {
-        if (mContext == null) {
-            return null;
-        }
         if (mPacketParser == null) {
             mPacketParser = new PacketParser(mContext);
+
         }
+
         return mPacketParser;
     }
 
     public PacketParser(Context context) {
-
+        mL1Controller = L1Controller.getInstance(context, this);
     }
 
+    public void requestRecord() {
+        byte[] data = {};
+        mL1Controller.send(0xA0, 0x01, data);
+    }
 
     public void setTime() {
         Calendar calendar = Calendar.getInstance();
@@ -71,7 +72,7 @@ public class PacketParser implements L1ControllerCallback{
         aData = aData << 6 | (minute & 0x3F);
         aData = aData << 6 | (second & 0x3F);
 
-        L1Controller.getInstance(mContext,this).send(0x10,0x01,Packet.intToByte(aData),4);
+        L1Controller.getInstance(mContext, this).send(0x10, 0x01, Packet.intToByte(aData));
     }
 
     @Override
@@ -81,10 +82,12 @@ public class PacketParser implements L1ControllerCallback{
 
     @Override
     public void onResolved(int command, int key, byte[] data, int length) {
+        Log.i(TAG,"onResolved:"+command+":"+key);
+        record(data);
         switch (command) {
-            case (byte) 0xA0:
+            case  160:
                 switch (key) {
-                    case (byte) 0x01:
+                    case 1:
 
                         break;
                     default:
@@ -92,6 +95,59 @@ public class PacketParser implements L1ControllerCallback{
                 }
                 break;
         }
+    }
+
+    void record(byte[] data) {
+        char[] id = new char[16];
+        int i = 0;
+        for (byte c : data) {
+            id[i] = (char) c;
+        }
+        String ID = String.valueOf(id, 1, 12);
+
+        int aDate;
+        aDate = data[7];
+        aDate <<= 8;
+        aDate |= data[8];
+        aDate <<= 8;
+        aDate |= data[9];
+        aDate <<= 8;
+        aDate |= data[10];
+
+        int second = aDate & 0x3F;
+        aDate >>= 6;
+        int minute = aDate & 0x3F;
+        aDate>>=6;
+        int hour = aDate&0x1F;
+        aDate>>=5;
+        int day=aDate&0x1F;
+        aDate>>=5;
+        int month = aDate&0x0F;
+        aDate>>=4;
+        int year = 2000+(aDate&0x3F);
+        String sTime=String.format(Locale.ENGLISH,"%04d-%02d-%02d %02d:%02d:%02d",year,month,day,hour,minute,second);
+        Log.i(TAG,sTime);
+        PigeonInfo pigeon;
+//        MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
+//        if (myPigeonDAO != null) {
+//            int index = myPigeonDAO.getActiveRecordIndex(ID);
+//            RecordInfo record = myPigeonDAO.getRecord(index);
+//            pigeon = myPigeonDAO.getPigeon(ID);
+//            Date start_time = new Date();
+//            Date arrive_time = new Date();
+//            record.PigeonID = ID;
+//            long between_minutes = (arrive_time.getTime() - start_time.getTime()) / 60000;
+//            record.ElapsedMinutes = (int) between_minutes;
+//            record.DistanceMeter = 100 * 1000;
+//            record.ArriveShedID = "C000003";
+//            record.Status = "REST";
+//            pigeon.FlyTimes = pigeon.FlyTimes + 1;
+//            pigeon.TotalDistance = pigeon.TotalDistance + record.DistanceMeter;
+//            pigeon.TotalMinutes = pigeon.TotalMinutes + record.ElapsedMinutes;
+//            myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
+//            myPigeonDAO.updateRecord(index, record);
+//        }
+
     }
 
     public static class PigeonRecord implements Parcelable {
@@ -163,9 +219,6 @@ public class PacketParser implements L1ControllerCallback{
                 int minute = calendar.get(Calendar.MINUTE);
                 int second = calendar.get(Calendar.SECOND);
 
-                if (mPacketCallBack != null) {
-                    mPacketCallBack.onDataReceived(RECEIVED_PIGEON_RECORD);
-                }
             }
         }.start();
     }
@@ -200,32 +253,5 @@ public class PacketParser implements L1ControllerCallback{
         pigeonRecord.Year = (int) (aData & 0x3F);
 
         return pigeonRecord;
-    }
-
-    private void resolve(Packet.PacketValue packetValue) {
-        byte command = packetValue.getCommandId();
-        byte key = packetValue.getKey();
-        int length = packetValue.getValueLength();
-        byte[] data = packetValue.getValue();
-
-    }
-
-
-    public interface CallBack {
-        void onSendSuccess();
-
-        void onSendFailure();
-
-        void onTimeOut();
-
-        void onConnectStatusChanged(boolean status);
-
-        void onDataReceived(byte category);
-
-        void onCharacteristicNotFound();
-    }
-
-    public void registerCallback(CallBack callBack) {
-        mPacketCallBack = callBack;
     }
 }

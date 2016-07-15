@@ -78,9 +78,9 @@ public class LeConnector extends BluetoothGattCallback {
 
         }
     };
-    private static final int STATE_DISCONNECTED = 0;
-    private static final int STATE_CONNECTING = 1;
-    private static final int STATE_CONNECTED = 2;
+    public static final int STATE_DISCONNECTED = 0;
+    public static final int STATE_CONNECTING = 1;
+    public static final int STATE_CONNECTED = 2;
     private int mConnectionState = STATE_DISCONNECTED;
 
     public final static String ERROR_DISCOVERY_SERVICE = "Error on discovering services";
@@ -159,20 +159,20 @@ public class LeConnector extends BluetoothGattCallback {
 
     public void autoConnect(String name, ConnectionCallback callBacks) {
         mConnectionCallback = callBacks;
+        final String dName= name;
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 String deviceName = device.getName();
+
                 if (deviceName == null) {
                     deviceName = LeAdvertiseParser.parseAdertisedData(scanRecord).getName();
                 }
-                if (deviceName != null) {
-                    if (device.getName().equals("BT05")) {
-                        //if (device.getName().equals("GLAREME")) {
-                        connect(mContext, device);
-                        mConnectionState = STATE_CONNECTING;
-                    }
+                if (deviceName != null && deviceName.equals(dName)) {
+                    connect(mContext, device);
+                    mConnectionState = STATE_CONNECTING;
                 }
+
                 Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
             }
         });
@@ -207,22 +207,12 @@ public class LeConnector extends BluetoothGattCallback {
     }
 
     public static LeConnector getInstance(Context context) {
-        if (mContext == null) {
-            mContext = context;
-        }
-        return getInstance();
-    }
-
-    public static LeConnector getInstance() {
-        if (mContext == null) {
-            return null;
-        }
+        mContext = context;
         if (mLeConnector == null) {
             mLeConnector = new LeConnector();
         }
         return mLeConnector;
     }
-
 
     public LeConnector() {
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to

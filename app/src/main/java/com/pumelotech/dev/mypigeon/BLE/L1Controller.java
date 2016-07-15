@@ -5,6 +5,8 @@ import android.os.Environment;
 import android.os.Message;
 import android.util.Log;
 
+import com.pumelotech.dev.mypigeon.MyApplication;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,8 +17,6 @@ import java.util.Arrays;
  */
 public class L1Controller implements BleProfileCallback {
     Context mContext;
-    private TimerThread sendTimerThread;
-    private TimerThread receiveTimerThread;
     private sendThread mSendThread;
     private Packet sPacket = new Packet();
     private Packet rPacket = new Packet();
@@ -27,14 +27,10 @@ public class L1Controller implements BleProfileCallback {
 
     public L1Controller(Context context) {
         mContext = context;
-        sendTimerThread = new TimerThread().setStatus(TimerThread.STOP).setWhat(0xAA);
-        sendTimerThread.start();
-        receiveTimerThread = new TimerThread().setStatus(TimerThread.STOP).setWhat(0xBB);
-        receiveTimerThread.start();
         mBleProfiles = BleProfiles.getInstance(this);
     }
 
-    public static L1Controller getInstance(Context context,L1ControllerCallback callback) {
+    public static L1Controller getInstance(Context context, L1ControllerCallback callback) {
         if (mL1Controller == null) {
             mL1Controller = new L1Controller(context);
         }
@@ -58,39 +54,31 @@ public class L1Controller implements BleProfileCallback {
     };
 
     static void writeLog(String content) {
-        String logFileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyPigeon";
-        File file = new File(logFileName);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        logFileName += "/Log.txt";
-        FileWriter fileWriter;
-        try {
-            fileWriter = new FileWriter(logFileName, true);
-            fileWriter.append(content);
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        String logFileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyPigeon";
+//        File file = new File(logFileName);
+//        if (!file.exists()) {
+//            file.mkdirs();
+//        }
+//        logFileName += "/Log.txt";
+//        FileWriter fileWriter;
+//        try {
+//            fileWriter = new FileWriter(logFileName, true);
+//            fileWriter.append(content);
+//            fileWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public boolean isIdle() {
-        if (sendTimerThread == null || receiveTimerThread == null) {
-            return false;
-        }
-        if ((TimerThread.STOP.equals(sendTimerThread.getStatus()))
-                && (TimerThread.STOP.equals(receiveTimerThread.getStatus()))) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     public void writeCharacteristic(byte[] data) {
         mBleProfiles.writeWorkCharacteristic(data);
     }
 
-    public void send(int command, int key, byte[] data, int length) {
+    public void send(int command, int key, byte[] data) {
         Packet.PacketValue packetValue = new Packet.PacketValue();
         packetValue.setCommandId((byte) command);
         packetValue.setKey((byte) key);
@@ -115,7 +103,6 @@ public class L1Controller implements BleProfileCallback {
         final byte[] data = sPacket.toByteArray();
         mSendThread = new sendThread(data);
         mSendThread.start();
-        sendTimerThread.setStatus(TimerThread.STOP);
         writeLog("Send ACK:" + sPacket.toString());
     }
 
@@ -127,7 +114,6 @@ public class L1Controller implements BleProfileCallback {
         }
         mSendThread = new sendThread(data);
         mSendThread.start();
-        sendTimerThread.setTimeOut(500).setStatus(TimerThread.RESTART);
         writeLog("Send:" + packet.toString());
     }
 
@@ -176,12 +162,25 @@ public class L1Controller implements BleProfileCallback {
         }
     }
 
-    private void resolve(Packet.PacketValue packetValue) {
-        byte command = packetValue.getCommandId();
-        byte key = packetValue.getKey();
-        int length = packetValue.getValueLength();
-        byte[] data = packetValue.getValue();
-        mL1ControllerCallback.onResolved(command, key, data, length);
+    private void resolve(Packet packet) {
+        Packet.PacketValue packetValue=new Packet.PacketValue();
+        try {
+             packetValue = (Packet.PacketValue) packet.getPacketValue().clone();
+
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        final int command = 0x000000FF&packetValue.getCommandId();
+        final int key = 0x000000FF&packetValue.getKey();
+        final int length = packetValue.getValueLength();
+        final byte[] data = packetValue.getValue();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mL1ControllerCallback.onResolved(command, key, data, length);
+            }
+        }).run();
+
     }
 
     @Override
@@ -199,7 +198,6 @@ public class L1Controller implements BleProfileCallback {
     @Override
     public void onReceived(byte[] data) {
         rPacket.append(data);
-        receiveTimerThread.setTimeOut(500).setStatus(TimerThread.RESTART);
         int checkResult = rPacket.checkPacket();
         Log.i(LeConnector.TAG, "Check:" + Integer.toHexString(checkResult));
         rPacket.print();
@@ -209,42 +207,25 @@ public class L1Controller implements BleProfileCallback {
         }
         //发送成功
         else if (checkResult == 0x10) {
-            sendTimerThread.setStatus(TimerThread.STOP);
-            receiveTimerThread.setStatus(TimerThread.STOP);
             writeLog("Receive ACK:" + rPacket.toString());
             rPacket.clear();
         }
         //ACK错误，需要重发
         else if (checkResult == 0x30) {
-            sendTimerThread.setStatus(TimerThread.STOP);
-            receiveTimerThread.setStatus(TimerThread.STOP);
             writeLog("Receive ACK:" + rPacket.toString());
-            if (0 < resent_cnt--) {
-                Log.i(LeConnector.TAG, "Resent Packet!");
-                sendPacket(sPacket);
-            } else {
-            }
             rPacket.clear();
         }
         //接收数据包校验正确
         else if (checkResult == 0) {
-            receiveTimerThread.setStatus(TimerThread.STOP);
-            try {
-                Packet.PacketValue packetValue = (Packet.PacketValue) rPacket.getPacketValue().clone();
-                resolve(packetValue);
-            } catch (CloneNotSupportedException e) {
-                Log.i(LeConnector.TAG, "Packet.PacketValue:CloneNotSupportedException");
-            }
-            Log.i(LeConnector.TAG, "Send ACK!");
+            resolve(rPacket);
             writeLog("Receive:" + rPacket.toString());
-            sendACK(rPacket, false);
+            //sendACK(rPacket, false);
             rPacket.clear();
         }
         //接收数据包校验错误
         else if (checkResult == 0x0b) {
-            receiveTimerThread.setStatus(TimerThread.STOP);
             writeLog("Receive:" + rPacket.toString());
-            sendACK(rPacket, true);
+            //sendACK(rPacket, true);
             rPacket.clear();
         }
     }

@@ -1,16 +1,23 @@
 package com.pumelotech.dev.mypigeon;
 
+import android.bluetooth.BluetoothGatt;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.pumelotech.dev.mypigeon.BLE.ConnectionCallback;
+import com.pumelotech.dev.mypigeon.BLE.LeConnector;
 import com.pumelotech.dev.mypigeon.BLE.PacketParser;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private PacketParser mPacketParser;
     MyApplication myApplication;
     ImageButton imageButton;
+    LeConnector mLeConnector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,58 +43,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         imageButton = (ImageButton) findViewById(R.id.bluetooth_state);
-        imageButton.setEnabled(false);
-        mPacketParser = PacketParser.getInstance(this);
-        mPacketParser.registerCallback(callBack);
+
+        mLeConnector = LeConnector.getInstance(this);
+        MyApplication.mLeConnector = mLeConnector;
+        if(mLeConnector.getmConnectionState()==LeConnector.STATE_CONNECTED){
+            imageButton.setEnabled(true);
+        }else {
+            imageButton.setEnabled(false);
+        }
+        mLeConnector.autoConnect("BT05", callBack);
         MyPigeonDAO.getInstance(this);
+        mPacketParser = PacketParser.getInstance(this);
+        polling();
     }
 
-    PacketParser.CallBack callBack = new PacketParser.CallBack() {
+    ConnectionCallback callBack = new ConnectionCallback() {
         @Override
-        public void onSendSuccess() {
-
-        }
-
-        @Override
-        public void onSendFailure() {
-
-        }
-
-        @Override
-        public void onTimeOut() {
-
-        }
-
-        @Override
-        public void onConnectStatusChanged(boolean status) {
-            final boolean s = status;
+        public void onConnectionStateChange(int newState) {
+            final boolean status;
+            status = newState == BluetoothGatt.STATE_CONNECTED;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    imageButton.setEnabled(s);
+                    imageButton.setEnabled(status);
                 }
             });
+        }
+
+        @Override
+        public void onError(String message, int errorCode) {
 
         }
 
         @Override
-        public void onDataReceived(byte category) {
-
-        }
-
-        @Override
-        public void onCharacteristicNotFound() {
+        public void onDeviceNotSupported() {
 
         }
     };
 
+    public void polling() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                mPacketParser.requestRecord();
+                Log.i("Packet","Polling");
+            }
+        }, 1000,2000);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         return true;
     }
-
-    boolean Toggle;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

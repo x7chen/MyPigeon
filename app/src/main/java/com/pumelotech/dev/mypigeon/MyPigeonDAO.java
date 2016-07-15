@@ -72,7 +72,23 @@ public class MyPigeonDAO {
         cs.close();
         return num;
     }
-
+    public PigeonInfo getPigeon(String id){
+        PigeonInfo pigeon = new PigeonInfo();
+        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable WHERE pigeon_id=" + id, new String[]{});
+        while (cs.moveToNext()) {
+            pigeon.Name = cs.getString(cs.getColumnIndex("name"));
+            pigeon.ID = cs.getString(cs.getColumnIndex("pigeon_id"));
+            pigeon.BirthDate = cs.getString(cs.getColumnIndex("birth_date"));
+            pigeon.ShedID = cs.getString(cs.getColumnIndex("shed_id"));
+            pigeon.OwnerID = cs.getString(cs.getColumnIndex("owner_id"));
+            pigeon.Status = cs.getString(cs.getColumnIndex("status"));
+            pigeon.FlyTimes = cs.getInt(cs.getColumnIndex("fly_times"));
+            pigeon.TotalDistance = cs.getInt(cs.getColumnIndex("total_distance"));
+            pigeon.TotalMinutes = cs.getInt(cs.getColumnIndex("total_minutes"));
+        }
+        cs.close();
+        return pigeon;
+    }
     public void insertPigeon(PigeonInfo pigeonInfo) {
         String sql = "insert into PigeonTable (Name,pigeon_id,birth_date,shed_id,owner_id,status," +
                 "fly_times,total_distance,total_minutes)values(?,?,?,?,?,?,?,?,?)";
