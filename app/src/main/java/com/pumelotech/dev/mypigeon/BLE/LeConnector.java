@@ -37,7 +37,7 @@ import java.util.List;
  * Service for managing connection and data communication with a GATT server hosted on a
  * given Bluetooth LE device.
  */
-public class LeConnector {
+public class LeConnector extends BluetoothGattCallback {
     public static final String TAG = MainActivity.DebugTag;
 
     static private Context mContext;
@@ -45,9 +45,39 @@ public class LeConnector {
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothGatt mBluetoothGatt;
     private BluetoothDevice mDevice;
-    private LeConnectorCallback mCallbacks;
     private List<BluetoothGattService> mServices;
+    private ConnectionCallback mConnectionCallback = new ConnectionCallback() {
+        @Override
+        public void onConnectionStateChange(int newState) {
 
+        }
+
+        @Override
+        public void onError(String message, int errorCode) {
+
+        }
+
+        @Override
+        public void onDeviceNotSupported() {
+
+        }
+    };
+    private TransferCallback mTransferCallback = new TransferCallback() {
+        @Override
+        public void onCharacteristicWrite(BluetoothGattCharacteristic characteristic) {
+
+        }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGattCharacteristic characteristic) {
+
+        }
+
+        @Override
+        public void onCharacteristicChanged(BluetoothGattCharacteristic characteristic) {
+
+        }
+    };
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
@@ -60,53 +90,52 @@ public class LeConnector {
 
     // Implements callback methods for GATT events that the app cares about.  For example,
     // connection change and services discovered.
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                mConnectionState = STATE_CONNECTED;
-                mCallbacks.onConnectionStateChange(newState);
-                Log.i(TAG, "Connected to GATT server.");
-                // Attempts to discover services after successful connection.
-                Log.i(TAG, "Attempting to start service discovery:" +
-                        mBluetoothGatt.discoverServices());
 
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                mConnectionState = STATE_DISCONNECTED;
-                mCallbacks.onConnectionStateChange(newState);
-            }
-        }
+    @Override
+    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        if (newState == BluetoothProfile.STATE_CONNECTED) {
+            mConnectionState = STATE_CONNECTED;
+            mConnectionCallback.onConnectionStateChange(newState);
+            Log.i(TAG, "Connected to GATT server.");
+            // Attempts to discover services after successful connection.
+            Log.i(TAG, "Attempting to start service discovery:" +
+                    mBluetoothGatt.discoverServices());
 
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                mServices = gatt.getServices();
-            } else {
-                mCallbacks.onError(ERROR_DISCOVERY_SERVICE, status);
-            }
+        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            mConnectionState = STATE_DISCONNECTED;
+            mConnectionCallback.onConnectionStateChange(newState);
         }
+    }
 
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt,
-                                         BluetoothGattCharacteristic characteristic,
-                                         int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                mCallbacks.onReceived(characteristic.getValue());
-            }
+    @Override
+    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            mServices = gatt.getServices();
+        } else {
+            mConnectionCallback.onError(ERROR_DISCOVERY_SERVICE, status);
         }
+    }
 
-        @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            mCallbacks.onSending();
-            super.onCharacteristicWrite(gatt, characteristic, status);
+    @Override
+    public void onCharacteristicRead(BluetoothGatt gatt,
+                                     BluetoothGattCharacteristic characteristic,
+                                     int status) {
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            mTransferCallback.onCharacteristicRead(characteristic);
         }
+    }
 
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt,
-                                            BluetoothGattCharacteristic characteristic) {
-            mCallbacks.onReceived(characteristic.getValue());
-        }
-    };
+    @Override
+    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        mTransferCallback.onCharacteristicWrite(characteristic);
+        super.onCharacteristicWrite(gatt, characteristic, status);
+    }
+
+    @Override
+    public void onCharacteristicChanged(BluetoothGatt gatt,
+                                        BluetoothGattCharacteristic characteristic) {
+        mTransferCallback.onCharacteristicChanged(characteristic);
+    }
 
     public BluetoothGatt getBluetoothGatt() {
         return mBluetoothGatt;
@@ -124,8 +153,12 @@ public class LeConnector {
         return mDevice;
     }
 
-    public void autoConnect(String name, LeConnectorCallback callBacks) {
-        mCallbacks = callBacks;
+    public void setTransferCallback(TransferCallback callback) {
+        mTransferCallback = callback;
+    }
+
+    public void autoConnect(String name, ConnectionCallback callBacks) {
+        mConnectionCallback = callBacks;
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -151,7 +184,7 @@ public class LeConnector {
             return;
         }
         mDevice = device;
-        mBluetoothGatt = mDevice.connectGatt(context, false, mGattCallback);
+        mBluetoothGatt = mDevice.connectGatt(context, false, this);
     }
 
     public void disconnect() {
@@ -197,7 +230,6 @@ public class LeConnector {
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-
         // Checks if Bluetooth is supported on the device.
         if (mBluetoothAdapter == null) {
             Toast.makeText(mContext, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
