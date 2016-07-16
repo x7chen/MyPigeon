@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/linearLayout">
+            android:id="@+id/pigeon_overview">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
                     android:text="在棚" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/main_rest_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -89,7 +89,7 @@
                     android:text="飞行中" />
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/main_fly_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -100,15 +100,6 @@
                     android:textSize="32dp" />
             </RelativeLayout>
         </LinearLayout>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="管理鸽子"
-            android:id="@+id/BT_managerPigeon"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="57dp" />
 
         <ImageButton
             android:layout_width="50dp"

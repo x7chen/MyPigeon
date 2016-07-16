@@ -13,6 +13,7 @@ import java.util.UUID;
  * Created by x7che on 2016/7/14.
  */
 public class BleProfiles implements TransferCallback {
+    private final static String TAG = MyApplication.DebugTag;
     public static final UUID LE_UART_SERVICE_UUID = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
     public static final UUID LE_UART_CHAR_UUID = UUID.fromString("0000ffe1-0000-1000-8000-00805f9b34fb");
     private BluetoothGattCharacteristic workCharacteristic;
@@ -40,11 +41,11 @@ public class BleProfiles implements TransferCallback {
     public void writeWorkCharacteristic(byte[] data) {
         if (workCharacteristic == null) {
             getWorkCharacteristic();
-            Log.i(MyApplication.DebugTag, "getWorkCharacteristic()");
+            Log.i(TAG, "getWorkCharacteristic()");
         } else {
             workCharacteristic.setValue(data);
             leConnector.getBluetoothGatt().writeCharacteristic(workCharacteristic);
-            Log.i(MyApplication.DebugTag, "workCharacteristic is not null");
+            Log.i(TAG, "workCharacteristic is not null");
         }
     }
 
@@ -62,7 +63,7 @@ public class BleProfiles implements TransferCallback {
                         if (characteristic.getUuid().equals(LE_UART_CHAR_UUID)) {
                             workCharacteristic = characteristic;
                             leConnector.getBluetoothGatt().setCharacteristicNotification(workCharacteristic, true);
-
+                            mCallback.onInitialized();
                         }
                     }
                 }

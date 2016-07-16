@@ -34,6 +34,7 @@ public class RecordActivity extends AppCompatActivity {
         });
         ListView listView = (ListView) findViewById(R.id.listView_record);
         final RecordListAdapter mRecordListAdapter= new RecordListAdapter(this);
+        MyApplication.mRecordListAdapter = mRecordListAdapter;
         listView.setAdapter(mRecordListAdapter);
         MyPigeonDAO  myPigeonDAO= MyPigeonDAO.getInstance();
         List<RecordInfo> recordInfoList = myPigeonDAO.getPigeonRecord(ID);

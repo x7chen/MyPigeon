@@ -6,4 +6,5 @@ package com.pumelotech.dev.mypigeon.BLE;
 public interface L1ControllerCallback {
     void onTimeOut();
     void onResolved(int command,int key,byte[] data,int length);
+    void onInitialized();
 }

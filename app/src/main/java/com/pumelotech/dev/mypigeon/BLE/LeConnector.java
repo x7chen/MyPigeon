@@ -38,7 +38,7 @@ import java.util.List;
  * given Bluetooth LE device.
  */
 public class LeConnector extends BluetoothGattCallback {
-    public static final String TAG = MainActivity.DebugTag;
+    public static final String TAG = MainActivity.TAG;
 
     static private Context mContext;
     static private LeConnector mLeConnector;
@@ -173,10 +173,10 @@ public class LeConnector extends BluetoothGattCallback {
                     mConnectionState = STATE_CONNECTING;
                 }
 
-                Log.d(MainActivity.DebugTag, "NAME:" + deviceName + "RSSI:" + rssi);
+                Log.d(MainActivity.TAG, "NAME:" + deviceName + "RSSI:" + rssi);
             }
         });
-        Log.d(MainActivity.DebugTag, "Start Scan");
+        Log.d(MainActivity.TAG, "Start Scan");
     }
 
     private void connect(Context context, BluetoothDevice device) {

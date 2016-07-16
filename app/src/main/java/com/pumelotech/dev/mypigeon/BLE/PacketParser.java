@@ -82,13 +82,13 @@ public class PacketParser implements L1ControllerCallback {
 
     @Override
     public void onResolved(int command, int key, byte[] data, int length) {
-        Log.i(TAG,"onResolved:"+command+":"+key);
-        record(data);
+        Log.i(TAG, "onResolved:" + command + ":" + key);
+
         switch (command) {
-            case  160:
+            case 160:
                 switch (key) {
                     case 1:
-
+                        record(data);
                         break;
                     default:
                         break;
@@ -97,56 +97,69 @@ public class PacketParser implements L1ControllerCallback {
         }
     }
 
-    void record(byte[] data) {
-        char[] id = new char[16];
-        int i = 0;
-        for (byte c : data) {
-            id[i] = (char) c;
-        }
-        String ID = String.valueOf(id, 1, 12);
+    @Override
+    public void onInitialized() {
+        setTime();
+    }
 
+    void record(byte[] data) {
+        if (data.length < 21) {
+            Log.i(TAG, "record length is not enough!");
+            return;
+        }
+        String ID = new String(data, 1, 16);
         int aDate;
-        aDate = data[7];
+        aDate = data[17];
         aDate <<= 8;
-        aDate |= data[8];
+        aDate |= data[18];
         aDate <<= 8;
-        aDate |= data[9];
+        aDate |= data[19];
         aDate <<= 8;
-        aDate |= data[10];
+        aDate |= data[20];
 
         int second = aDate & 0x3F;
-        aDate >>= 6;
+        aDate >>>= 6;
         int minute = aDate & 0x3F;
-        aDate>>=6;
-        int hour = aDate&0x1F;
-        aDate>>=5;
-        int day=aDate&0x1F;
-        aDate>>=5;
-        int month = aDate&0x0F;
-        aDate>>=4;
-        int year = 2000+(aDate&0x3F);
-        String sTime=String.format(Locale.ENGLISH,"%04d-%02d-%02d %02d:%02d:%02d",year,month,day,hour,minute,second);
-        Log.i(TAG,sTime);
+        aDate >>>= 6;
+        int hour = aDate & 0x1F;
+        aDate >>>= 5;
+        int day = aDate & 0x1F;
+        aDate >>>= 5;
+        int month = aDate & 0x0F;
+        aDate >>>= 4;
+        int year = 2000 + (aDate & 0x3F);
+        String aTime = String.format(Locale.ENGLISH, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
+        Log.i(TAG, aTime);
         PigeonInfo pigeon;
-//        MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
-//        if (myPigeonDAO != null) {
-//            int index = myPigeonDAO.getActiveRecordIndex(ID);
-//            RecordInfo record = myPigeonDAO.getRecord(index);
-//            pigeon = myPigeonDAO.getPigeon(ID);
-//            Date start_time = new Date();
-//            Date arrive_time = new Date();
-//            record.PigeonID = ID;
-//            long between_minutes = (arrive_time.getTime() - start_time.getTime()) / 60000;
-//            record.ElapsedMinutes = (int) between_minutes;
-//            record.DistanceMeter = 100 * 1000;
-//            record.ArriveShedID = "C000003";
-//            record.Status = "REST";
-//            pigeon.FlyTimes = pigeon.FlyTimes + 1;
-//            pigeon.TotalDistance = pigeon.TotalDistance + record.DistanceMeter;
-//            pigeon.TotalMinutes = pigeon.TotalMinutes + record.ElapsedMinutes;
-//            myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
-//            myPigeonDAO.updateRecord(index, record);
-//        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
+        if (myPigeonDAO != null) {
+            int index = myPigeonDAO.getActiveRecordIndex(ID);
+            RecordInfo record = myPigeonDAO.getRecord(index);
+            pigeon = myPigeonDAO.getPigeon(ID);
+            Date start_time = new Date();
+            Date arrive_time = new Date();
+            try {
+                start_time = format.parse(record.StartTime);
+                arrive_time = format.parse(aTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            record.ArriveTime = aTime;
+            record.PigeonID = ID;
+            long between_minutes = (arrive_time.getTime() - start_time.getTime()) / 60000;
+            record.ElapsedMinutes = (int) between_minutes;
+            record.DistanceMeter = 100 * 1000;
+            record.ArriveShedID = "C000003";
+            record.Status = "REST";
+            pigeon.FlyTimes = pigeon.FlyTimes + 1;
+            pigeon.TotalDistance = pigeon.TotalDistance + record.DistanceMeter;
+            pigeon.TotalMinutes = pigeon.TotalMinutes + record.ElapsedMinutes;
+            myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
+            myPigeonDAO.updateRecord(index, record);
+            MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+            MyApplication.mRecordListAdapter.notifyDataSetChanged();
+        }
 
     }
 

@@ -2,6 +2,9 @@ package com.pumelotech.dev.mypigeon.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -89,6 +92,10 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
                         pigeon.TotalMinutes = pigeon.TotalMinutes+record.ElapsedMinutes;
                         myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID),pigeon);
                         myPigeonDAO.updateRecord(index, record);
+
+//                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+//                        Ringtone r = RingtoneManager.getRingtone(MyApplication.context, notification);
+//                        r.play();
                     }
                 } else {
                     pigeon.Status = "FLY";

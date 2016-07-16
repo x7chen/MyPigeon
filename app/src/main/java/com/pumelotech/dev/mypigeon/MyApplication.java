@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 
 import com.pumelotech.dev.mypigeon.Adapter.PigeonRecyclerAdapter;
+import com.pumelotech.dev.mypigeon.Adapter.RecordListAdapter;
 import com.pumelotech.dev.mypigeon.BLE.LeConnector;
 import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
@@ -18,6 +19,7 @@ public class MyApplication extends Application {
     public static final String DebugTag = "MyPigeon";
     public static Typeface fontMSYH;
     public static PigeonRecyclerAdapter pigeonRecyclerAdapter;
+    public static RecordListAdapter mRecordListAdapter;
     public static Context context;
     public static PigeonListActivity pigeonListActivity;
     public static List<PigeonInfo> mPigeonList;

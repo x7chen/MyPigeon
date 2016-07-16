@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Packet {
 
-    static String TAG = MainActivity.DebugTag;
+    static String TAG = MainActivity.TAG;
     List<Byte> mPacket = new ArrayList<Byte>();
     static short mSequenceId = 0;
     CRC16 crc16 = new CRC16();

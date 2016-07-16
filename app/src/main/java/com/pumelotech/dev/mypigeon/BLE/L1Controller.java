@@ -16,6 +16,7 @@ import java.util.Arrays;
  * Created by Administrator on 2016/7/15.
  */
 public class L1Controller implements BleProfileCallback {
+    private final static String TAG = MyApplication.DebugTag;
     Context mContext;
     private sendThread mSendThread;
     private Packet sPacket = new Packet();
@@ -45,7 +46,7 @@ public class L1Controller implements BleProfileCallback {
             if (msg.what == 0xAA) {
                 if (mL1ControllerCallback != null) {
                     mL1ControllerCallback.onTimeOut();
-                    Log.i(LeConnector.TAG, "ACK TimeOut!");
+                    Log.i(TAG, "ACK TimeOut!");
                 }
             } else if (msg.what == 0xBB) {
                 rPacket.clear();
@@ -192,14 +193,14 @@ public class L1Controller implements BleProfileCallback {
 
     @Override
     public void onInitialized() {
-
+        mL1ControllerCallback.onInitialized();
     }
 
     @Override
     public void onReceived(byte[] data) {
         rPacket.append(data);
         int checkResult = rPacket.checkPacket();
-        Log.i(LeConnector.TAG, "Check:" + Integer.toHexString(checkResult));
+        Log.i(TAG, "Check:" + Integer.toHexString(checkResult));
         rPacket.print();
         //数据头错误，清空
         if (checkResult == 0x05) {

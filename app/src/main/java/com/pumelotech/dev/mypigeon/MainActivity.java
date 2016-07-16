@@ -11,21 +11,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.pumelotech.dev.mypigeon.BLE.ConnectionCallback;
 import com.pumelotech.dev.mypigeon.BLE.LeConnector;
 import com.pumelotech.dev.mypigeon.BLE.PacketParser;
+import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String DebugTag = MyApplication.DebugTag;
+    public static String TAG = MyApplication.DebugTag;
     private PacketParser mPacketParser;
-    MyApplication myApplication;
     ImageButton imageButton;
     LeConnector mLeConnector;
+    MyPigeonDAO myPigeonDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,28 +39,51 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setTitle("我的鸽子");
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(mToolbar);
-        Button BT_ManagerPigeon = (Button) findViewById(R.id.BT_managerPigeon);
-        BT_ManagerPigeon.setOnClickListener(new View.OnClickListener() {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pigeon_overview);
+        linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, PigeonListActivity.class));
+                managerPigeon();
             }
         });
         imageButton = (ImageButton) findViewById(R.id.bluetooth_state);
 
         mLeConnector = LeConnector.getInstance(this);
         MyApplication.mLeConnector = mLeConnector;
-        if(mLeConnector.getmConnectionState()==LeConnector.STATE_CONNECTED){
+        if (mLeConnector.getmConnectionState() == LeConnector.STATE_CONNECTED) {
             imageButton.setEnabled(true);
-        }else {
+        } else {
             imageButton.setEnabled(false);
         }
         mLeConnector.autoConnect("BT05", callBack);
-        MyPigeonDAO.getInstance(this);
+        myPigeonDAO = MyPigeonDAO.getInstance(this);
+
+
         mPacketParser = PacketParser.getInstance(this);
         polling();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TextView flyCount = (TextView) findViewById(R.id.main_fly_count);
+        TextView restCount = (TextView) findViewById(R.id.main_rest_count);
+        int fly = 0;
+        int rest = 0;
+        List<PigeonInfo> pigeonInfoList = myPigeonDAO.getAllPigeon();
+        for (PigeonInfo pigeon : pigeonInfoList) {
+            if (pigeon.Status.equals("FLY")) {
+                fly++;
+            } else {
+                rest++;
+            }
+        }
+        flyCount.setText(String.valueOf(fly));
+        restCount.setText(String.valueOf(rest));
+    }
+    void managerPigeon(){
+        startActivity(new Intent(MainActivity.this, PigeonListActivity.class));
+    }
     ConnectionCallback callBack = new ConnectionCallback() {
         @Override
         public void onConnectionStateChange(int newState) {
@@ -86,10 +113,10 @@ public class MainActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             public void run() {
                 mPacketParser.requestRecord();
-                Log.i("Packet","Polling");
             }
-        }, 1000,2000);
+        }, 1000, 2000);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
