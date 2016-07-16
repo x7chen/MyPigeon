@@ -30,6 +30,8 @@ public class PigeonListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pigeon_list);
+        StatusBarCompat.compat(this,0xFF000000);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_list);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setTitle("我的鸽子");

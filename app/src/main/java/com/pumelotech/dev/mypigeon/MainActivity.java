@@ -35,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_main_page);
         mToolbar.setTitle("我的鸽子");
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(mToolbar);
+        StatusBarCompat.compat(this,0xFF000000);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pigeon_overview);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

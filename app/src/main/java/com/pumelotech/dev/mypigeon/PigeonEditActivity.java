@@ -39,6 +39,7 @@ public class PigeonEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pigeon_edit);
+        StatusBarCompat.compat(this,0xFF000000);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_edit);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setTitle("编辑");

@@ -17,6 +17,8 @@ public class RecordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+        StatusBarCompat.compat(this,0xFF000000);
+
         String name = getIntent().getStringExtra("Name");
         String ID = getIntent().getStringExtra("ID");
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_record);
