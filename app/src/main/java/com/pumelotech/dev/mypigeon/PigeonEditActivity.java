@@ -112,7 +112,7 @@ public class PigeonEditActivity extends AppCompatActivity {
                     pigeonInfo.Name = string;
                 }
                 pigeonInfo.ID = pigeon_id.getText().toString();
-                if (pigeonInfo.ID.matches("^\\d{16}$")) {
+                if (pigeonInfo.ID.matches("^[0-9\\s]{16}$")) {
                     pigeonInfo.ShedID = shed_id.getText().toString();
                 } else {
                     Toast.makeText(this, "ID输入有误,必须为16位数字", Toast.LENGTH_SHORT).show();

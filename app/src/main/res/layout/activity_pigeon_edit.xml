@@ -87,7 +87,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:width="150dp"
-                    android:inputType="number"
                     android:singleLine="true"
                     android:layout_toRightOf="@+id/pigeon_edit_id_tag"
                     android:layout_alignBottom="@+id/pigeon_edit_id_tag"
