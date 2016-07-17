@@ -79,8 +79,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateDisplay() {
-        final TextView flyCount = (TextView) findViewById(R.id.main_fly_count);
-        final TextView restCount = (TextView) findViewById(R.id.main_rest_count);
+
         int fly=0;
         int rest=0;
         List<PigeonInfo> pigeonInfoList = myPigeonDAO.getAllPigeon();
@@ -96,8 +95,11 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                TextView flyCount = (TextView) findViewById(R.id.main_fly_count);
+                TextView restCount = (TextView) findViewById(R.id.main_rest_count);
                 flyCount.setText(String.valueOf(gfly));
                 restCount.setText(String.valueOf(grest));
+                Log.i(TAG+1,"runOnUiThread");
             }
         });
 

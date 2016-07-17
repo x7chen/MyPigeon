@@ -168,8 +168,21 @@ public class PacketParser implements L1ControllerCallback {
                 }
 
             }
-            MyApplication.mRecordListAdapter.notifyDataSetChanged();
+            Log.i(TAG, "["+Thread.currentThread().getStackTrace()[2].getFileName()+","+Thread.currentThread().getStackTrace()[2].getLineNumber()+"]");
             MyApplication.mainActivity.updateDisplay();
+            if(MyApplication.mRecordListAdapter!=null) {
+                MyApplication.mRecordListAdapter.notifyDataSetChanged();
+            }
+            if(MyApplication.pigeonRecyclerAdapter!=null){
+                MyApplication.pigeonListActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+                    }
+                });
+
+            }
+
         }
 
     }
