@@ -29,6 +29,17 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mPigeonList = (ArrayList<PigeonInfo>) list;
     }
 
+    public PigeonInfo getPigeonById(String id) {
+        if (mPigeonList != null&&!mPigeonList.isEmpty()) {
+            for(PigeonInfo pigeon:mPigeonList){
+                if(pigeon.ID.equals(id)){
+                    return pigeon;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -60,7 +71,7 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         viewHolder.PigeonID.setText("ID:" + pigeon.ID);
         viewHolder.FlyTimes.setText(Integer.toString(pigeon.FlyTimes));
         viewHolder.TotalTime.setText(pigeon.TotalMinutes / 60 + "时" + pigeon.TotalMinutes % 60 + "分");
-        viewHolder.TotalDistance.setText(pigeon.TotalDistance/1000 + "Km");
+        viewHolder.TotalDistance.setText(pigeon.TotalDistance / 1000 + "Km");
         viewHolder.BirthDate.setText(pigeon.BirthDate);
         final String pigeonStatus = pigeon.Status;
         if (pigeonStatus.equals("FLY")) {
@@ -69,6 +80,7 @@ public class PigeonRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             //viewHolder.flyButton.setEnabled(false);
         } else {
             viewHolder.PigeonStatus.setText("在棚");
+            viewHolder.flyButton.setText("放飞");
             //viewHolder.flyButton.setEnabled(true);
         }
 

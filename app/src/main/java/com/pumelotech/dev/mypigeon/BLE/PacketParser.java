@@ -72,7 +72,7 @@ public class PacketParser implements L1ControllerCallback {
         aData = aData << 6 | (minute & 0x3F);
         aData = aData << 6 | (second & 0x3F);
 
-        L1Controller.getInstance(mContext, this).send(0x10, 0x01, Packet.intToByte(aData));
+        mL1Controller.send(0x10, 0x01, Packet.intToByte(aData));
     }
 
     @Override
@@ -108,34 +108,36 @@ public class PacketParser implements L1ControllerCallback {
             return;
         }
         String ID = new String(data, 1, 16);
-        int aDate;
-        aDate = data[17];
-        aDate <<= 8;
-        aDate |= data[18];
-        aDate <<= 8;
-        aDate |= data[19];
-        aDate <<= 8;
-        aDate |= data[20];
-
-        int second = aDate & 0x3F;
-        aDate >>>= 6;
-        int minute = aDate & 0x3F;
-        aDate >>>= 6;
-        int hour = aDate & 0x1F;
-        aDate >>>= 5;
-        int day = aDate & 0x1F;
-        aDate >>>= 5;
-        int month = aDate & 0x0F;
-        aDate >>>= 4;
-        int year = 2000 + (aDate & 0x3F);
+        Log.i(TAG, "ID:" + ID);
+        long aData;
+        aData = data[17] & 0xFFL;
+        aData = (aData << 8) | (data[18] & 0xFFL);
+        aData = (aData << 8) | (data[19] & 0xFFL);
+        aData = (aData << 8) | (data[20] & 0xFFL);
+        Log.i(TAG, String.format(Locale.ENGLISH, "%08X", aData));
+        long second = aData & 0x3F;
+        aData >>>= 6;
+        long minute = aData & 0x3F;
+        aData >>>= 6;
+        long hour = aData & 0x1F;
+        aData >>>= 5;
+        long day = aData & 0x1F;
+        aData >>>= 5;
+        long month = aData & 0x0F;
+        aData >>>= 4;
+        long year = 2000 + (aData & 0x3F);
         String aTime = String.format(Locale.ENGLISH, "%04d-%02d-%02d %02d:%02d:%02d", year, month, day, hour, minute, second);
         Log.i(TAG, aTime);
         PigeonInfo pigeon;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
         if (myPigeonDAO != null) {
+            Log.i(TAG,"myPigeonDAO != null");
             int index = myPigeonDAO.getActiveRecordIndex(ID);
             RecordInfo record = myPigeonDAO.getRecord(index);
+            if(record.PigeonID.equals("--")){
+                return;
+            }
             pigeon = myPigeonDAO.getPigeon(ID);
             Date start_time = new Date();
             Date arrive_time = new Date();
@@ -155,63 +157,21 @@ public class PacketParser implements L1ControllerCallback {
             pigeon.FlyTimes = pigeon.FlyTimes + 1;
             pigeon.TotalDistance = pigeon.TotalDistance + record.DistanceMeter;
             pigeon.TotalMinutes = pigeon.TotalMinutes + record.ElapsedMinutes;
+            pigeon.Status="REST";
             myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
             myPigeonDAO.updateRecord(index, record);
-            MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+            for (PigeonInfo pigeonInfo : MyApplication.mPigeonList) {
+                if (pigeon.ID.equals(pigeonInfo.ID)) {
+                    MyApplication.mPigeonList.set(MyApplication.mPigeonList.indexOf(pigeonInfo), pigeon);
+                    Log.i(TAG,"indexOf(pigeon):"+MyApplication.mPigeonList.indexOf(pigeonInfo));
+                    MyApplication.pigeonRecyclerAdapter.notifyItemChanged(MyApplication.mPigeonList.indexOf(pigeonInfo));
+                }
+
+            }
             MyApplication.mRecordListAdapter.notifyDataSetChanged();
+            MyApplication.mainActivity.updateDisplay();
         }
 
-    }
-
-    public static class PigeonRecord implements Parcelable {
-        public int Year;
-        public int Month;
-        public int Day;
-        public int Hour;
-        public int Minute;
-        public int Second;
-        public int ID;
-
-        public PigeonRecord() {
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.Year);
-            dest.writeInt(this.Month);
-            dest.writeInt(this.Day);
-            dest.writeInt(this.Hour);
-            dest.writeInt(this.Minute);
-            dest.writeInt(this.Second);
-            dest.writeInt(this.ID);
-        }
-
-        protected PigeonRecord(Parcel in) {
-            this.Year = in.readInt();
-            this.Month = in.readInt();
-            this.Day = in.readInt();
-            this.Hour = in.readInt();
-            this.Minute = in.readInt();
-            this.Second = in.readInt();
-            this.ID = in.readInt();
-        }
-
-        public static final Creator<PigeonRecord> CREATOR = new Creator<PigeonRecord>() {
-            @Override
-            public PigeonRecord createFromParcel(Parcel source) {
-                return new PigeonRecord(source);
-            }
-
-            @Override
-            public PigeonRecord[] newArray(int size) {
-                return new PigeonRecord[size];
-            }
-        };
     }
 
     public void mock() {
@@ -236,35 +196,4 @@ public class PacketParser implements L1ControllerCallback {
         }.start();
     }
 
-
-    private PigeonRecord PigeonRecordFromByte(byte[] data) {
-        PigeonRecord pigeonRecord = new PigeonRecord();
-
-        long aData;
-
-        aData = data[0] & 0xFFL;
-        aData = (aData << 8) | (data[1] & 0xFFL);
-        aData = (aData << 8) | (data[2] & 0xFFL);
-        aData = (aData << 8) | (data[3] & 0xFFL);
-        pigeonRecord.ID = (int) aData;
-
-        aData = data[4] & 0xFFL;
-        aData = (aData << 8) | (data[5] & 0xFFL);
-        aData = (aData << 8) | (data[6] & 0xFFL);
-        aData = (aData << 8) | (data[7] & 0xFFL);
-
-        pigeonRecord.Second = (int) (aData & 0x3F);
-        aData >>>= 6;
-        pigeonRecord.Minute = (int) (aData & 0x3F);
-        aData >>>= 6;
-        pigeonRecord.Hour = (int) (aData & 0x1F);
-        aData >>>= 5;
-        pigeonRecord.Day = (int) (aData & 0x1F);
-        aData >>>= 5;
-        pigeonRecord.Month = (int) (aData & 0x0F);
-        aData >>>= 4;
-        pigeonRecord.Year = (int) (aData & 0x3F);
-
-        return pigeonRecord;
-    }
 }

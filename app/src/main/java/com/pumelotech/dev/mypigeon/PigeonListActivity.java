@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,7 @@ import java.util.List;
 
 
 public class PigeonListActivity extends AppCompatActivity {
-
+    public static String TAG = MyApplication.DebugTag;
     PigeonRecyclerAdapter mPigeonRecyclerAdapter;
     Toolbar mToolbar;
     ImageButton mFabButton;
@@ -64,12 +65,6 @@ public class PigeonListActivity extends AppCompatActivity {
         mPigeonRecyclerAdapter= new PigeonRecyclerAdapter(allPigeon);
         MyApplication.pigeonRecyclerAdapter = mPigeonRecyclerAdapter;
         recyclerView.setAdapter(mPigeonRecyclerAdapter);
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         recyclerView.setOnScrollListener(new HidingScrollListener() {
             @Override
             public void onHide() {
@@ -80,7 +75,15 @@ public class PigeonListActivity extends AppCompatActivity {
                 showViews();
             }
         });
+        Log.i(TAG,"PigeonListActivity.onCreate()");
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG,"PigeonListActivity.onResume()");
+    }
+
     private void hideViews() {
         mToolbar.animate().translationY(-mToolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFabButton.getLayoutParams();

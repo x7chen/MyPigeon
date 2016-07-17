@@ -87,7 +87,7 @@ public class L1Controller implements BleProfileCallback {
         sPacket.setPacketValue(packetValue, true);
         sPacket.print();
         sendPacket(sPacket);
-        resent_cnt = 3;
+        rPacket.clear();
     }
 
     private void sendACK(Packet rPacket, boolean error) {
@@ -164,17 +164,11 @@ public class L1Controller implements BleProfileCallback {
     }
 
     private void resolve(Packet packet) {
-        Packet.PacketValue packetValue=new Packet.PacketValue();
-        try {
-             packetValue = (Packet.PacketValue) packet.getPacketValue().clone();
-
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        final int command = 0x000000FF&packetValue.getCommandId();
-        final int key = 0x000000FF&packetValue.getKey();
+        Packet.PacketValue packetValue = packet.getPacketValue();
+        final int command = 0x000000FF & packetValue.getCommandId();
+        final int key = 0x000000FF & packetValue.getKey();
         final int length = packetValue.getValueLength();
-        final byte[] data = packetValue.getValue();
+        final byte[] data = packetValue.getValue().clone();
         new Thread(new Runnable() {
             @Override
             public void run() {

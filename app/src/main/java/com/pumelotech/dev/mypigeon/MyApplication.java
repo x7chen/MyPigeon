@@ -26,6 +26,7 @@ public class MyApplication extends Application {
     public static boolean PigeonListItemClickable = true;
     public static boolean FlyEnable;
     public static LeConnector mLeConnector;
+    public static MainActivity mainActivity;
     @Override
     public void onCreate() {
         super.onCreate();

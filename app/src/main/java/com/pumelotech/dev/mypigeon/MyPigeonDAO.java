@@ -65,7 +65,7 @@ public class MyPigeonDAO {
 
     public int getPigeonIndex(String id) {
         int num = 0;
-        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable WHERE pigeon_id=" + id, new String[]{});
+        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable WHERE pigeon_id=" + "'"+id+"'", new String[]{});
         while (cs.moveToNext()) {
             num = cs.getInt(cs.getColumnIndex("num"));
         }
@@ -74,7 +74,7 @@ public class MyPigeonDAO {
     }
     public PigeonInfo getPigeon(String id){
         PigeonInfo pigeon = new PigeonInfo();
-        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable WHERE pigeon_id=" + id, new String[]{});
+        Cursor cs = db.rawQuery("SELECT * FROM PigeonTable WHERE pigeon_id=" + "'"+id+"'", new String[]{});
         while (cs.moveToNext()) {
             pigeon.Name = cs.getString(cs.getColumnIndex("name"));
             pigeon.ID = cs.getString(cs.getColumnIndex("pigeon_id"));
@@ -204,7 +204,7 @@ public class MyPigeonDAO {
 
     public int getActiveRecordIndex(String id) {
         int num = 0;
-        Cursor cs = db.rawQuery("SELECT * FROM RecordTable WHERE pigeon_id=" + id + " AND status='FLY'", new String[]{});
+        Cursor cs = db.rawQuery("SELECT * FROM RecordTable WHERE pigeon_id='" + id + "' AND status='FLY'", new String[]{});
         while (cs.moveToNext()) {
             num = cs.getInt(cs.getColumnIndex("num"));
         }

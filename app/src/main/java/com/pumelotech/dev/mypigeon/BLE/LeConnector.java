@@ -46,6 +46,7 @@ public class LeConnector extends BluetoothGattCallback {
     private BluetoothGatt mBluetoothGatt;
     private BluetoothDevice mDevice;
     private List<BluetoothGattService> mServices;
+    private String mName;
     private ConnectionCallback mConnectionCallback = new ConnectionCallback() {
         @Override
         public void onConnectionStateChange(int newState) {
@@ -104,6 +105,8 @@ public class LeConnector extends BluetoothGattCallback {
         } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
             mConnectionState = STATE_DISCONNECTED;
             mConnectionCallback.onConnectionStateChange(newState);
+            autoConnect(mName);
+        } else if (newState == BluetoothGatt.STATE_CONNECTING) {
         }
     }
 
@@ -159,7 +162,11 @@ public class LeConnector extends BluetoothGattCallback {
 
     public void autoConnect(String name, ConnectionCallback callBacks) {
         mConnectionCallback = callBacks;
-        final String dName= name;
+        autoConnect(name);
+    }
+
+    private void autoConnect(String name) {
+        final String dName = name;
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -169,11 +176,14 @@ public class LeConnector extends BluetoothGattCallback {
                     deviceName = LeAdvertiseParser.parseAdertisedData(scanRecord).getName();
                 }
                 if (deviceName != null && deviceName.equals(dName)) {
-                    connect(mContext, device);
-                    mConnectionState = STATE_CONNECTING;
+                    if (mConnectionState == STATE_DISCONNECTED) {
+                        connect(mContext, device);
+                        mBluetoothAdapter.stopLeScan(null);
+                        mConnectionState = STATE_CONNECTING;
+                    }
                 }
 
-                Log.d(MainActivity.TAG, "NAME:" + deviceName + "RSSI:" + rssi);
+                Log.d(MainActivity.TAG, "NAME:" + deviceName + "  RSSI:" + rssi);
             }
         });
         Log.d(MainActivity.TAG, "Start Scan");
@@ -184,6 +194,7 @@ public class LeConnector extends BluetoothGattCallback {
             return;
         }
         mDevice = device;
+
         mBluetoothGatt = mDevice.connectGatt(context, false, this);
     }
 

@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setTitle("我的鸽子");
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(mToolbar);
-        StatusBarCompat.compat(this,0xFF000000);
+        StatusBarCompat.compat(this, 0xFF000000);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.pigeon_overview);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,29 +49,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         imageButton = (ImageButton) findViewById(R.id.bluetooth_state);
+        MyApplication.mainActivity = this;
 
-        mLeConnector = LeConnector.getInstance(this);
-        MyApplication.mLeConnector = mLeConnector;
-        if (mLeConnector.getmConnectionState() == LeConnector.STATE_CONNECTED) {
-            imageButton.setEnabled(true);
-        } else {
-            imageButton.setEnabled(false);
-        }
-        mLeConnector.autoConnect("BT05", callBack);
-        myPigeonDAO = MyPigeonDAO.getInstance(this);
-
-
-        mPacketParser = PacketParser.getInstance(this);
         polling();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        TextView flyCount = (TextView) findViewById(R.id.main_fly_count);
-        TextView restCount = (TextView) findViewById(R.id.main_rest_count);
-        int fly = 0;
-        int rest = 0;
+        if (mLeConnector == null) {
+            mLeConnector = LeConnector.getInstance(this);
+            MyApplication.mLeConnector = mLeConnector;
+            if (mLeConnector.getmConnectionState() == LeConnector.STATE_CONNECTED) {
+                imageButton.setEnabled(true);
+            } else {
+                imageButton.setEnabled(false);
+            }
+            mLeConnector.autoConnect("BT05", callBack);
+        }
+
+        if (myPigeonDAO == null) {
+            myPigeonDAO = MyPigeonDAO.getInstance(this);
+        }
+        if (mPacketParser == null) {
+            mPacketParser = PacketParser.getInstance(this);
+        }
+        updateDisplay();
+
+    }
+
+    public void updateDisplay() {
+        final TextView flyCount = (TextView) findViewById(R.id.main_fly_count);
+        final TextView restCount = (TextView) findViewById(R.id.main_rest_count);
+        int fly=0;
+        int rest=0;
         List<PigeonInfo> pigeonInfoList = myPigeonDAO.getAllPigeon();
         for (PigeonInfo pigeon : pigeonInfoList) {
             if (pigeon.Status.equals("FLY")) {
@@ -80,12 +91,22 @@ public class MainActivity extends AppCompatActivity {
                 rest++;
             }
         }
-        flyCount.setText(String.valueOf(fly));
-        restCount.setText(String.valueOf(rest));
+        final int gfly = fly;
+        final int grest = rest;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                flyCount.setText(String.valueOf(gfly));
+                restCount.setText(String.valueOf(grest));
+            }
+        });
+
     }
-    void managerPigeon(){
+
+    void managerPigeon() {
         startActivity(new Intent(MainActivity.this, PigeonListActivity.class));
     }
+
     ConnectionCallback callBack = new ConnectionCallback() {
         @Override
         public void onConnectionStateChange(int newState) {
@@ -116,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mPacketParser.requestRecord();
             }
-        }, 1000, 2000);
+        }, 1000, 10000);
     }
 
     @Override
