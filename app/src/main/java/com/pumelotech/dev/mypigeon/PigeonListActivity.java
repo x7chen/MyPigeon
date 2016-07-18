@@ -25,6 +25,7 @@ import java.util.List;
 public class PigeonListActivity extends AppCompatActivity {
     public static String TAG = MyApplication.DebugTag;
     PigeonRecyclerAdapter mPigeonRecyclerAdapter;
+    List<PigeonInfo> allPigeon = null;
     Toolbar mToolbar;
     ImageButton mFabButton;
     @Override
@@ -54,7 +55,7 @@ public class PigeonListActivity extends AppCompatActivity {
             }
         });
         MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
-        List<PigeonInfo> allPigeon = null;
+
         if (myPigeonDAO != null) {
             allPigeon = myPigeonDAO.getAllPigeon();
         }
@@ -118,4 +119,23 @@ public class PigeonListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    public void updatePigeon(PigeonInfo pigeon) {
+        for (PigeonInfo pigeonInfo : allPigeon) {
+            if (pigeon.ID.equals(pigeonInfo.ID)) {
+                int pigeon_index = allPigeon.indexOf(pigeonInfo);
+                allPigeon.set(pigeon_index, pigeon);
+                Log.i(TAG, "indexOf(pigeon):" + pigeon_index);
+            }
+        }
+        if (mPigeonRecyclerAdapter != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mPigeonRecyclerAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+    }
+
 }

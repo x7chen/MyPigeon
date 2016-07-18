@@ -160,32 +160,15 @@ public class PacketParser implements L1ControllerCallback {
             pigeon.Status = "REST";
             myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
             myPigeonDAO.updateRecord(index, record);
-            for (PigeonInfo pigeonInfo : MyApplication.mPigeonList) {
-                if (pigeon.ID.equals(pigeonInfo.ID)) {
-                    int pigeon_index = MyApplication.mPigeonList.indexOf(pigeonInfo);
-                    MyApplication.mPigeonList.set(pigeon_index, pigeon);
-                    Log.i(TAG, "indexOf(pigeon):" + pigeon_index);
-                    MyApplication.pigeonRecyclerAdapter.notifyItemChanged(pigeon_index);
-                }
-
-            }
-            Log.i(TAG, "[" + Thread.currentThread().getStackTrace()[2].getFileName() + "," + Thread.currentThread().getStackTrace()[2].getLineNumber() + "]");
+            //Log.i(TAG, "[" + Thread.currentThread().getStackTrace()[2].getFileName() + "," + Thread.currentThread().getStackTrace()[2].getLineNumber() + "]");
             MyApplication.mainActivity.updateDisplay();     //这行代码可以正常执行了。
-            if (MyApplication.mRecordListAdapter != null) {
-                MyApplication.mRecordListAdapter.notifyDataSetChanged();
+            if(MyApplication.recordActivity!=null){
+                MyApplication.recordActivity.updateRecord(record);
             }
-            if (MyApplication.pigeonRecyclerAdapter != null) {
-                MyApplication.pigeonListActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
-                    }
-                });
-
+            if(MyApplication.pigeonListActivity!=null) {
+                MyApplication.pigeonListActivity.updatePigeon(pigeon);
             }
-
         }
-
     }
 
     public void mock() {

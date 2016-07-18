@@ -21,12 +21,14 @@ public class MyApplication extends Application {
     public static PigeonRecyclerAdapter pigeonRecyclerAdapter;
     public static RecordListAdapter mRecordListAdapter;
     public static Context context;
+    public static MainActivity mainActivity;
     public static PigeonListActivity pigeonListActivity;
+    public static RecordActivity recordActivity;
     public static List<PigeonInfo> mPigeonList;
     public static boolean PigeonListItemClickable = true;
     public static boolean FlyEnable = false;
     public static LeConnector mLeConnector;
-    public static MainActivity mainActivity;
+
     @Override
     public void onCreate() {
         super.onCreate();

@@ -24,7 +24,6 @@ public class L1Controller implements BleProfileCallback {
     private BleProfiles mBleProfiles;
     static private L1ControllerCallback mL1ControllerCallback;
     static private L1Controller mL1Controller;
-    private int resent_cnt = 0;
 
     public L1Controller(Context context) {
         mContext = context;

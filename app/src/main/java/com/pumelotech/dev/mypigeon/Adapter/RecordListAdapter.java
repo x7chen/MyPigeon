@@ -2,6 +2,7 @@ package com.pumelotech.dev.mypigeon.Adapter;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,19 @@ public class RecordListAdapter extends BaseAdapter {
         mInflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void addRecord(RecordInfo recordInfo) {
-        if (!mRecord.contains(recordInfo)) {
-            mRecord.add(recordInfo);
+    public void addRecord(RecordInfo record) {
+        if (!mRecord.contains(record)) {
+            mRecord.add(record);
         }
     }
-
+    public void setRecord(RecordInfo record) {
+        for (RecordInfo recordInfo : mRecord) {
+            if ("FLY".equals(recordInfo.Status)) {
+                int record_index = mRecord.indexOf(recordInfo);
+                mRecord.set(record_index, record);
+            }
+        }
+    }
     public RecordInfo getRecord(int position) {
         return mRecord.get(position);
     }

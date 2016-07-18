@@ -49,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         imageButton = (ImageButton) findViewById(R.id.bluetooth_state);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mPacketParser!=null) {
+                    mPacketParser.requestRecord();
+                }
+            }
+        });
         MyApplication.mainActivity = this;
 
         polling();
@@ -139,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 mPacketParser.requestRecord();
             }
-        }, 1000, 10000);
+        }, 5000, 10000);
     }
 
     @Override

@@ -3,16 +3,20 @@ package com.pumelotech.dev.mypigeon;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import com.pumelotech.dev.mypigeon.Adapter.RecordListAdapter;
+import com.pumelotech.dev.mypigeon.DataType.PigeonInfo;
 import com.pumelotech.dev.mypigeon.DataType.RecordInfo;
 
 import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
-
+    private final static String TAG = MyApplication.DebugTag;
+    List<RecordInfo> recordInfoList;
+    RecordListAdapter mRecordListAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,15 +39,29 @@ public class RecordActivity extends AppCompatActivity {
             }
         });
         ListView listView = (ListView) findViewById(R.id.listView_record);
-        final RecordListAdapter mRecordListAdapter= new RecordListAdapter(this);
+        mRecordListAdapter= new RecordListAdapter(this);
+        MyApplication.recordActivity = this;
         MyApplication.mRecordListAdapter = mRecordListAdapter;
         listView.setAdapter(mRecordListAdapter);
         MyPigeonDAO  myPigeonDAO= MyPigeonDAO.getInstance();
-        List<RecordInfo> recordInfoList = myPigeonDAO.getPigeonRecord(ID);
+        recordInfoList = myPigeonDAO.getPigeonRecord(ID);
         for(RecordInfo record:recordInfoList) {
             mRecordListAdapter.addRecord(record);
         }
 
         mRecordListAdapter.notifyDataSetChanged();
+    }
+
+    public void updateRecord(RecordInfo record) {
+        mRecordListAdapter.setRecord(record);
+        if (mRecordListAdapter != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mRecordListAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
     }
 }
