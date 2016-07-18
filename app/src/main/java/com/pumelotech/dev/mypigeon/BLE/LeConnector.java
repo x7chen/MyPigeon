@@ -29,6 +29,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.pumelotech.dev.mypigeon.MainActivity;
+import com.pumelotech.dev.mypigeon.MyApplication;
 import com.pumelotech.dev.mypigeon.R;
 
 import java.util.List;
@@ -38,7 +39,7 @@ import java.util.List;
  * given Bluetooth LE device.
  */
 public class LeConnector extends BluetoothGattCallback {
-    public static final String TAG = MainActivity.TAG;
+    public static final String TAG = MyApplication.DebugTag;
 
     static private Context mContext;
     static private LeConnector mLeConnector;
@@ -163,6 +164,7 @@ public class LeConnector extends BluetoothGattCallback {
     public void autoConnect(String name, ConnectionCallback callBacks) {
         mConnectionCallback = callBacks;
         autoConnect(name);
+        Log.i(TAG,"autoConnect:"+name);
     }
 
     private void autoConnect(String name) {

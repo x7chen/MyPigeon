@@ -108,6 +108,15 @@
             android:background="@drawable/bluetooth_state"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="version:0.5"
+            android:id="@+id/version"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
 </RelativeLayout>
