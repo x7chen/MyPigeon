@@ -175,7 +175,6 @@ public class L1Controller implements BleProfileCallback {
                 mL1ControllerCallback.onResolved(command, key, data, length);
             }
         }).run();
-
     }
 
     @Override

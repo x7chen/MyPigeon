@@ -24,7 +24,7 @@ public class MyApplication extends Application {
     public static PigeonListActivity pigeonListActivity;
     public static List<PigeonInfo> mPigeonList;
     public static boolean PigeonListItemClickable = true;
-    public static boolean FlyEnable;
+    public static boolean FlyEnable = false;
     public static LeConnector mLeConnector;
     public static MainActivity mainActivity;
     @Override

@@ -132,10 +132,10 @@ public class PacketParser implements L1ControllerCallback {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
         MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
         if (myPigeonDAO != null) {
-            Log.i(TAG,"myPigeonDAO != null");
+            Log.i(TAG, "myPigeonDAO != null");
             int index = myPigeonDAO.getActiveRecordIndex(ID);
             RecordInfo record = myPigeonDAO.getRecord(index);
-            if(record.PigeonID.equals("--")){
+            if (record.PigeonID.equals("--")) {
                 return;
             }
             pigeon = myPigeonDAO.getPigeon(ID);
@@ -157,23 +157,24 @@ public class PacketParser implements L1ControllerCallback {
             pigeon.FlyTimes = pigeon.FlyTimes + 1;
             pigeon.TotalDistance = pigeon.TotalDistance + record.DistanceMeter;
             pigeon.TotalMinutes = pigeon.TotalMinutes + record.ElapsedMinutes;
-            pigeon.Status="REST";
+            pigeon.Status = "REST";
             myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
             myPigeonDAO.updateRecord(index, record);
             for (PigeonInfo pigeonInfo : MyApplication.mPigeonList) {
                 if (pigeon.ID.equals(pigeonInfo.ID)) {
-                    MyApplication.mPigeonList.set(MyApplication.mPigeonList.indexOf(pigeonInfo), pigeon);
-                    Log.i(TAG,"indexOf(pigeon):"+MyApplication.mPigeonList.indexOf(pigeonInfo));
-                    MyApplication.pigeonRecyclerAdapter.notifyItemChanged(MyApplication.mPigeonList.indexOf(pigeonInfo));
+                    int pigeon_index = MyApplication.mPigeonList.indexOf(pigeonInfo);
+                    MyApplication.mPigeonList.set(pigeon_index, pigeon);
+                    Log.i(TAG, "indexOf(pigeon):" + pigeon_index);
+                    MyApplication.pigeonRecyclerAdapter.notifyItemChanged(pigeon_index);
                 }
 
             }
-            Log.i(TAG, "["+Thread.currentThread().getStackTrace()[2].getFileName()+","+Thread.currentThread().getStackTrace()[2].getLineNumber()+"]");
-            MyApplication.mainActivity.updateDisplay();
-            if(MyApplication.mRecordListAdapter!=null) {
+            Log.i(TAG, "[" + Thread.currentThread().getStackTrace()[2].getFileName() + "," + Thread.currentThread().getStackTrace()[2].getLineNumber() + "]");
+            MyApplication.mainActivity.updateDisplay();     //这行代码可以正常执行了。
+            if (MyApplication.mRecordListAdapter != null) {
                 MyApplication.mRecordListAdapter.notifyDataSetChanged();
             }
-            if(MyApplication.pigeonRecyclerAdapter!=null){
+            if (MyApplication.pigeonRecyclerAdapter != null) {
                 MyApplication.pigeonListActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
