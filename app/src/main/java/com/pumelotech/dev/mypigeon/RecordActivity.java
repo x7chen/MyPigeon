@@ -23,13 +23,12 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         StatusBarCompat.compat(this,0xFF000000);
 
-        String name = getIntent().getStringExtra("Name");
-        String ID = getIntent().getStringExtra("ID");
+        PigeonInfo pigeon = getIntent().getParcelableExtra("pigeon");
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_record);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         mToolbar.setSubtitleTextColor(getResources().getColor(R.color.colorWhite));
-        mToolbar.setTitle(name);
+        mToolbar.setTitle(pigeon.Name);
         mToolbar.setSubtitle("飞行记录");
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -44,7 +43,9 @@ public class RecordActivity extends AppCompatActivity {
         MyApplication.mRecordListAdapter = mRecordListAdapter;
         listView.setAdapter(mRecordListAdapter);
         MyPigeonDAO  myPigeonDAO= MyPigeonDAO.getInstance();
-        recordInfoList = myPigeonDAO.getPigeonRecord(ID);
+        if (myPigeonDAO != null) {
+            recordInfoList = myPigeonDAO.getPigeonRecord(pigeon.ID);
+        }
         for(RecordInfo record:recordInfoList) {
             mRecordListAdapter.addRecord(record);
         }

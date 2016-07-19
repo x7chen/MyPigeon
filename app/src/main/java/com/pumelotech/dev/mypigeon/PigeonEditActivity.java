@@ -1,15 +1,12 @@
 package com.pumelotech.dev.mypigeon;
 
-import android.app.*;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +26,7 @@ public class PigeonEditActivity extends AppCompatActivity {
     EditText pigeon_birth_date;
     EditText shed_id;
     Boolean is_modify = false;
+    PigeonInfo pigeon;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -39,7 +37,7 @@ public class PigeonEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pigeon_edit);
-        StatusBarCompat.compat(this,0xFF000000);
+        StatusBarCompat.compat(this, 0xFF000000);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_edit);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
         mToolbar.setTitle("编辑");
@@ -57,18 +55,16 @@ public class PigeonEditActivity extends AppCompatActivity {
         shed_id = (EditText) findViewById(R.id.pigeon_edit_shed);
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra("Name");
-        String id = intent.getStringExtra("ID");
-        String birth_date = intent.getStringExtra("BirthDate");
-        String shed = intent.getStringExtra("ShedID");
-        if (id != null) {
-            pigeon_name.setText(name);
-            pigeon_id.setText(id);
-            pigeon_birth_date.setText(birth_date);
-            shed_id.setText(shed);
-            is_modify = true;
-        } else {
+        pigeon = intent.getParcelableExtra("pigeon");
+        if (pigeon == null) {
+            pigeon = new PigeonInfo();
             is_modify = false;
+        } else {
+            is_modify = true;
+            pigeon_name.setText(pigeon.Name);
+            pigeon_id.setText(pigeon.ID);
+            pigeon_birth_date.setText(pigeon.BirthDate);
+            shed_id.setText(pigeon.ShedID);
         }
         pigeon_birth_date.setClickable(true);
         pigeon_birth_date.setOnClickListener(new View.OnClickListener() {
@@ -105,16 +101,16 @@ public class PigeonEditActivity extends AppCompatActivity {
         switch (id) {
             case R.id.menu_done:
                 String string;
-                PigeonInfo pigeonInfo = new PigeonInfo();
+
                 string = pigeon_name.getText().toString();
                 if (string.equals("")) {
 
                 } else {
-                    pigeonInfo.Name = string;
+                    pigeon.Name = string;
                 }
-                pigeonInfo.ID = pigeon_id.getText().toString();
-                if (pigeonInfo.ID.matches("^[0-9\\s]{16}$")) {
-                    pigeonInfo.ShedID = shed_id.getText().toString();
+                pigeon.ID = pigeon_id.getText().toString();
+                if (pigeon.ID.matches("^[0-9\\s]{16}$")) {
+                    pigeon.ShedID = shed_id.getText().toString();
                 } else {
                     Toast.makeText(this, "ID输入有误,必须为16位数字", Toast.LENGTH_SHORT).show();
                     break;
@@ -123,34 +119,24 @@ public class PigeonEditActivity extends AppCompatActivity {
                 if (string.equals("")) {
 
                 } else {
-                    pigeonInfo.BirthDate = string;
+                    pigeon.BirthDate = string;
                 }
 
                 if (is_modify) {
                     MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
                     if (myPigeonDAO != null) {
-                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeonInfo.ID), pigeonInfo);
+                        myPigeonDAO.updatePigeon(myPigeonDAO.getPigeonIndex(pigeon.ID), pigeon);
                     }
-                    if (MyApplication.mPigeonList == null) {
-                        Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
-                    } else {
-                        for (PigeonInfo pigeon : MyApplication.mPigeonList) {
-                            if (pigeon.ID.equals(pigeonInfo.ID)) {
-                                MyApplication.mPigeonList.set(MyApplication.mPigeonList.indexOf(pigeon), pigeonInfo);
-                            }
-                        }
-                        MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+                    if (MyApplication.pigeonListActivity != null) {
+                        MyApplication.pigeonListActivity.updatePigeon(pigeon);
                     }
                 } else {
                     MyPigeonDAO myPigeonDAO = MyPigeonDAO.getInstance();
                     if (myPigeonDAO != null) {
-                        myPigeonDAO.insertPigeon(pigeonInfo);
+                        myPigeonDAO.insertPigeon(pigeon);
                     }
-                    if (MyApplication.mPigeonList == null) {
-                        Log.i(MyApplication.DebugTag, "MyApplication.mPigeonList = null");
-                    } else {
-                        MyApplication.mPigeonList.add(pigeonInfo);
-                        MyApplication.pigeonRecyclerAdapter.notifyDataSetChanged();
+                    if (MyApplication.pigeonListActivity != null) {
+                        MyApplication.pigeonListActivity.addPigeon(pigeon);
                     }
                 }
                 finish();

@@ -53,10 +53,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             public void onClick(View v) {
                 PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
                 Intent intent = new Intent(context, PigeonEditActivity.class);
-                intent.putExtra("Name", pigeon.Name);
-                intent.putExtra("ID", pigeon.ID);
-                intent.putExtra("BirthDate", pigeon.BirthDate);
-                intent.putExtra("ShedID", pigeon.ShedID);
+                intent.putExtra("pigeon",pigeon);
                 context.startActivity(intent);
             }
         });
@@ -123,8 +120,7 @@ public class RecyclerItemViewHolder extends RecyclerView.ViewHolder implements V
             final PigeonInfo pigeon = MyApplication.mPigeonList.get(getLayoutPosition() - 1);
             if (pigeon == null) return;
             Intent intent = new Intent(MyApplication.pigeonListActivity, RecordActivity.class);
-            intent.putExtra("Name", pigeon.Name);
-            intent.putExtra("ID", pigeon.ID);
+            intent.putExtra("pigeon", pigeon);
             MyApplication.pigeonListActivity.startActivity(intent);
         }
     }

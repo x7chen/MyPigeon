@@ -28,11 +28,12 @@ public class PigeonListActivity extends AppCompatActivity {
     List<PigeonInfo> allPigeon = null;
     Toolbar mToolbar;
     ImageButton mFabButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pigeon_list);
-        StatusBarCompat.compat(this,0xFF000000);
+        StatusBarCompat.compat(this, 0xFF000000);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_pigeon_list);
         mToolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_24dp);
@@ -63,7 +64,7 @@ public class PigeonListActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView_pigeon);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         MyApplication.PigeonListItemClickable = true;
-        mPigeonRecyclerAdapter= new PigeonRecyclerAdapter(allPigeon);
+        mPigeonRecyclerAdapter = new PigeonRecyclerAdapter(allPigeon);
         MyApplication.pigeonRecyclerAdapter = mPigeonRecyclerAdapter;
         recyclerView.setAdapter(mPigeonRecyclerAdapter);
         recyclerView.setOnScrollListener(new HidingScrollListener() {
@@ -71,31 +72,33 @@ public class PigeonListActivity extends AppCompatActivity {
             public void onHide() {
                 hideViews();
             }
+
             @Override
             public void onShow() {
                 showViews();
             }
         });
-        Log.i(TAG,"PigeonListActivity.onCreate()");
+        Log.i(TAG, "PigeonListActivity.onCreate()");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG,"PigeonListActivity.onResume()");
+        Log.i(TAG, "PigeonListActivity.onResume()");
     }
 
     private void hideViews() {
         mToolbar.animate().translationY(-mToolbar.getHeight()).setInterpolator(new AccelerateInterpolator(2));
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFabButton.getLayoutParams();
         int fabBottomMargin = lp.bottomMargin;
-        mFabButton.animate().translationY(mFabButton.getHeight()+fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
+        mFabButton.animate().translationY(mFabButton.getHeight() + fabBottomMargin).setInterpolator(new AccelerateInterpolator(2)).start();
     }
 
     private void showViews() {
         mToolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2));
         mFabButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.fly, menu);
@@ -119,6 +122,7 @@ public class PigeonListActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     public void updatePigeon(PigeonInfo pigeon) {
         for (PigeonInfo pigeonInfo : allPigeon) {
             if (pigeon.ID.equals(pigeonInfo.ID)) {
@@ -138,4 +142,16 @@ public class PigeonListActivity extends AppCompatActivity {
         }
     }
 
+    public void addPigeon(PigeonInfo pigeon) {
+        allPigeon.add(pigeon);
+        if (mPigeonRecyclerAdapter != null) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mPigeonRecyclerAdapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+    }
 }
